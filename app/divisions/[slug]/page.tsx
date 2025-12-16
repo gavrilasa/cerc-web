@@ -143,7 +143,7 @@ export default function DivisionPage({ params }: { params: Promise<{ slug: strin
         </div>
         
         {/* 3. NEW Section: Technology Stack */}
-        <div className="bento-anim my-12 mx-4">
+        <div className="bento-anim my-12 mx-4 md:mx-0">
             <h2 className="text-xl font-bold uppercase tracking-tight mb-6 flex items-center gap-3">
                 <Cpu className={cn("w-5 h-5", textColorClass)} />
                 Technology Stack
@@ -224,8 +224,8 @@ export default function DivisionPage({ params }: { params: Promise<{ slug: strin
                 <ArrowRight className="w-6 h-6 text-white -rotate-45 group-hover:rotate-0 group-hover:scale-110 transition-all duration-300" />
             </div>
             <div className="z-10 mt-auto">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tight">Awards</h3>
-              <p className="text-white/80 mt-2 text-sm">Hall of fame &rarr;</p>
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight">Achievements</h3>
+              <p className="text-white/80 mt-2 text-sm">Our members achievements &rarr;</p>
             </div>
              {/* Subtle Pattern */}
              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
