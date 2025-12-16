@@ -1,30 +1,186 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { Hero } from "@/components/home/Hero";
-import { Separator } from "@/components/ui/separator";
+import Intro from "@/components/Intro";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  ArrowRight,
+  ExternalLink,
+} from "lucide-react";
+
+// Data divisi
+const divisionData = [
+  {
+    title: "SOFTWARE ENGINEERING",
+    link: "/divisions/software",
+    desc: "Crafting robust applications, scalable web platforms, and mobile solutions.",
+  },
+  {
+    title: "NETWORK & SECURITY",
+    link: "/divisions/network",
+    desc: "Securing infrastructure, managing cloud systems, and defending digital assets.",
+  },
+  {
+    title: "EMBEDDED & IoT",
+    link: "/divisions/embedded",
+    desc: "Bridging hardware and software to build intelligent physical devices.",
+  },
+  {
+    title: "MULTIMEDIA & DESIGN",
+    link: "/divisions/multimedia",
+    desc: "Creating compelling visual experiences, UI/UX design, and creative content.",
+  },
+];
 
 export default function HomePage() {
-	return (
-		<div className="w-full">
-			<main className="mx-auto min-h-screen container w-full px-4 py-2">
-				<Hero />
-				<Separator className="my-12" />
-				<div className="space-y-2 mb-4">
-					<div className="bg-accent h-6 w-4/6 rounded-md border" />
-					<div className="bg-accent h-6 w-1/2 rounded-md border" />
-				</div>
-				<div className="flex gap-2 mb-8">
-					<div className="bg-accent h-3 w-14 rounded-md border" />
-					<div className="bg-accent h-3 w-12 rounded-md border" />
-				</div>
+  const [showSplash, setShowSplash] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
-				{Array.from({ length: 7 }).map((_, i) => (
-					<div key={i} className="space-y-2 mb-8">
-						<div className="bg-accent h-4 w-full rounded-md border" />
-						<div className="bg-accent h-4 w-full rounded-md border" />
-						<div className="bg-accent h-4 w-full rounded-md border" />
-						<div className="bg-accent h-4 w-1/2 rounded-md border" />
-					</div>
-				))}
-			</main>
-		</div>
-	);
+  useEffect(() => {
+    const hasSeenSplash = sessionStorage.getItem("hasSeenSplashSession");
+    if (!hasSeenSplash) {
+      setShowSplash(true);
+    }
+    setIsChecking(false);
+  }, []);
+
+  const handleFinish = () => {
+    setShowSplash(false);
+    sessionStorage.setItem("hasSeenSplashSession", "true");
+  };
+
+  if (isChecking) return null;
+
+  // Membagi data untuk kolom kiri dan kanan
+  const leftColumnDivisions = divisionData.slice(0, 2);
+  const rightColumnDivisions = divisionData.slice(2, 4);
+
+  // Komponen Kartu Divisi yang dapat digunakan kembali
+  const DivisionCard = ({ item }: { item: (typeof divisionData)[0] }) => (
+    <Link
+      href={item.link}
+      className="group flex-1 bg-neutral-50 dark:bg-neutral-900 border border-transparent hover:border-border rounded-[2.5rem] p-8 flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1"
+    >
+      <div>
+        <h3 className="text-2xl font-black uppercase tracking-tight leading-none mb-4 group-hover:underline decoration-2 underline-offset-4">
+          {item.title}
+        </h3>
+        <p className="text-muted-foreground font-medium leading-relaxed">
+          {item.desc}
+        </p>
+      </div>
+      <div className="mt-6 flex justify-end opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+        <ArrowRight className="w-6 h-6 text-foreground" />
+      </div>
+    </Link>
+  );
+
+  return (
+    <div className="w-full min-h-screen bg-background flex flex-col overflow-hidden">
+      {showSplash ? (
+        <Intro onFinish={handleFinish} />
+      ) : (
+        <>
+          <main className="flex-1 w-full animate-in fade-in duration-1000 slide-in-from-bottom-4 px-4 py-2 md:py-4 space-y-12">
+            {/* 1. HERO SECTION (Tetap sama) */}
+            <Hero />
+
+            {/* 2. CORE PILLARS SECTION (Bento Grid) */}
+            <section className="container mx-auto">
+              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-auto lg:h-[600px]">
+                
+                {/* Left Column */}
+                <div className="flex flex-col gap-4 h-full order-2 lg:order-1">
+                  {leftColumnDivisions.map((item, index) => (
+                    <DivisionCard key={index} item={item} />
+                  ))}
+                </div>
+
+                {/* Middle Column - Main Statement */}
+                <div className="lg:col-span-1 order-1 lg:order-2 h-full bg-neutral-900 dark:bg-neutral-100 rounded-[2.5rem] p-8 md:p-12 flex flex-col items-center justify-center text-center text-neutral-100 dark:text-neutral-900 shadow-sm border border-transparent hover:border-neutral-700 dark:hover:border-neutral-300 transition-all duration-300 hover:shadow-lg">
+
+                   {/* Logo */}
+                   <div className="w-20 h-20 bg-white/10 dark:bg-black/5 rounded-3xl flex items-center justify-center mb-8 backdrop-blur-sm">
+                      <Image
+                         src="https://res.cloudinary.com/dah2v3xbg/image/upload/v1764013541/Logo-CERC-presspadding_r027nm.png"
+                         alt="CERC Logo"
+                         width={40}
+                         height={40}
+                         className="object-contain"
+                      />
+                   </div>
+
+                   {/* Title */}
+                   <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none mb-6">
+                     Our Core <br/> Pillars
+                   </h2>
+                   
+                   {/* Desc */}
+                   <p className="text-lg text-neutral-400 dark:text-neutral-600 font-medium leading-relaxed max-w-[280px] mb-8">
+                     Four specialized divisions mastering the foundations of modern computing.
+                   </p>
+
+                   {/* Footer Motto */}
+                   <div className="inline-flex flex-col items-center gap-2 mt-2 pt-8 border-t border-white/20 dark:border-black/20">
+                    <span className="text-md font-mono uppercase tracking-widest opacity-70">Our Motto</span>
+                	<span className="font-bold text-sm tracking-wider">THINK PRECISELY, BUILD WISELY.</span>
+                    </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="flex flex-col gap-4 h-full order-3">
+                  {rightColumnDivisions.map((item, index) => (
+                    <DivisionCard key={index} item={item} />
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* 3. FEATURED PROJECT (Tetap sama seperti sebelumnya) */}
+            <section className="container mx-auto mt-8">
+                <div className="relative bg-neutral-900 dark:bg-neutral-100 rounded-[2.5rem] p-8 md:p-12 overflow-hidden group text-white dark:text-neutral-900 shadow-sm">
+                   {/* Background Image Effect */}
+                   <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?q=80&w=2400&auto=format&fit=crop')] bg-cover bg-center opacity-30 group-hover:opacity-40 transition-opacity scale-105 group-hover:scale-100 duration-1000" />
+                   <div className="absolute inset-0 bg-linear-to-r from-black via-black/90 to-transparent dark:from-white dark:via-white/90" />
+
+                   <div className="relative z-10 flex flex-col lg:flex-row gap-12 items-center justify-between h-full">
+                      <div className="max-w-2xl space-y-6">
+                         <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter">
+                            Learning Management System (LMS) CERC
+                         </h2>
+                         <p className="text-lg md:text-xl text-neutral-300 dark:text-neutral-600 leading-relaxed font-medium">
+                            An open-source initiative creating a unified dashboard for managing IoT devices and analyzing sensor data in real-time using edge computing.
+                         </p>
+                         <div className="flex flex-wrap gap-4 pt-4">
+                            <Button size="lg" className="rounded-full h-14 px-8 font-bold text-base bg-white text-black hover:bg-neutral-200 dark:bg-black dark:text-white">
+                               View Case Study <ArrowRight className="ml-2 w-4 h-4" />
+                            </Button>
+                             <Button variant="outline" size="lg" className="rounded-full h-14 px-8 font-bold text-base bg-transparent border-white/20 text-white hover:bg-white/10 dark:border-black/20 dark:text-black dark:hover:bg-black/10">
+                               GitHub Repo <ExternalLink className="ml-2 w-4 h-4" />
+                            </Button>
+                         </div>
+                      </div>
+                      
+                      {/* Floating Mockup */}
+                      <div className="hidden lg:block flex-1 relative w-full max-w-md aspect-square">
+                        <div className="absolute inset-0 bg-linear-to-tr from-gray-500 to-blue-500 rounded-3xl rotate-6 opacity-50 blur-2xl animate-pulse" />
+						<Image 
+                        src="/mockup.png" 
+                        alt="Dashboard Mockup" 
+                        fill
+						className="object-contain relative z-10"  
+                    	/>
+                      </div>
+                   </div>
+                </div>
+             </section>
+          </main>
+        </>
+      )}
+    </div>
+  );
 }

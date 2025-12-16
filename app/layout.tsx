@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Navbar } from "@/components/Navbar";
 import ReactLenis from "lenis/react";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
 	variable: "--font-inter",
@@ -39,6 +40,7 @@ export default function RootLayout({
 					<ReactLenis root />
 					<Navbar />
 					{children}
+					<Footer />
 				</ThemeProvider>
 			</body>
 		</html>
