@@ -1,7 +1,5 @@
-"use client";
-
-import React, { use } from "react";
-import { divisions } from "@/lib/divisions";
+import React from "react";
+import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,11 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function ProjectsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const data = divisions[slug];
+export default async function ProjectsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-  if (!data) return notFound();
+  // 1. Fetch data from DB
+  const division = await prisma.division.findUnique({
+    where: { slug },
+    include: {
+      projects: {
+        orderBy: { createdAt: "desc" }
+      }
+    }
+  });
+
+  if (!division) return notFound();
 
   return (
     <div className="min-h-screen w-full px-4 py-2 md:py-4 space-y-8 bg-background">
@@ -24,20 +31,20 @@ export default function ProjectsPage({ params }: { params: Promise<{ slug: strin
               href={`/divisions/${slug}`}
               className="text-sm font-mono text-muted-foreground hover:text-foreground transition-colors mb-2 block"
             >
-              ← Back to {data.title}
+              ← Back to {division.title}
             </Link>
             <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">
               Projects
             </h1>
             <p className="text-muted-foreground mt-2 max-w-lg">
-              Showcase of applications, research, and experiments by the {data.title} division.
+              Showcase of applications, research, and experiments by the {division.title} division.
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.projects.length > 0 ? (
-            data.projects.map((project) => (
+          {division.projects.length > 0 ? (
+            division.projects.map((project) => (
               <div
                 key={project.id}
                 className="group relative flex flex-col overflow-hidden rounded-3xl bg-neutral-100 dark:bg-neutral-900 border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition-all duration-300"
@@ -55,7 +62,14 @@ export default function ProjectsPage({ params }: { params: Promise<{ slug: strin
                     <h3 className="text-2xl font-bold uppercase tracking-tight">
                       {project.title}
                     </h3>
-                    <ArrowUpRight className="w-5 h-5 opacity-0 -translate-y-2 translate-x-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
+                    {/* If you have a demoUrl, you can wrap this in a Link */}
+                    {project.demoUrl ? (
+                        <Link href={project.demoUrl} target="_blank">
+                             <ArrowUpRight className="w-5 h-5 opacity-0 -translate-y-2 translate-x-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all cursor-pointer" />
+                        </Link>
+                    ) : (
+                        <ArrowUpRight className="w-5 h-5 opacity-0 -translate-y-2 translate-x-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
+                    )}
                   </div>
                   <p className="text-muted-foreground text-sm mb-6 flex-1">
                     {project.description}

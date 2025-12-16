@@ -1,21 +1,30 @@
-"use client";
-
-import React, { use } from "react";
-import { divisions } from "@/lib/divisions";
+import React from "react";
+import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Trophy, Calendar, Award, Crown } from "lucide-react";
+import { Trophy, Calendar, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function AchievementsPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const data = divisions[slug];
+export default async function AchievementsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-  if (!data) return notFound();
+  const division = await prisma.division.findUnique({
+    where: { slug },
+    include: {
+      achievements: {
+        orderBy: { date: "desc" } // Assuming date is sortable or you might want createdAt
+      }
+    }
+  });
 
-  // Color handling
-  const textColorClass = data.colorClass.replace("bg-", "text-");
+  if (!division) return notFound();
+
+  // Normalize colors from DB
+  const baseColor = division.colorClass || "bg-blue-600";
+  // Ensure we have bg- for backgrounds/overlays and text- for text
+  const bgColorClass = baseColor.replace("text-", "bg-");
+  const textColorClass = baseColor.replace("bg-", "text-");
 
   return (
     <div className="min-h-screen w-full px-4 py-2 md:py-4 space-y-8 bg-background">
@@ -25,19 +34,19 @@ export default function AchievementsPage({ params }: { params: Promise<{ slug: s
             href={`/divisions/${slug}`}
             className="text-sm font-mono text-muted-foreground hover:text-foreground transition-colors mb-2 block"
           >
-            ← Back to {data.title}
+            ← Back to {division.title}
           </Link>
           <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter">
             Achievements
           </h1>
           <p className="text-muted-foreground mt-2 max-w-xl">
-            Celebrating the milestones, awards, and recognitions earned by the {data.title} team.
+            Celebrating the milestones, awards, and recognitions earned by the {division.title} team.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-8">
-          {data.achievements.length > 0 ? (
-            data.achievements.map((item, index) => (
+          {division.achievements.length > 0 ? (
+            division.achievements.map((item) => (
               <div
                 key={item.id}
                 className="group relative flex flex-col md:flex-row overflow-hidden rounded-3xl bg-neutral-50 dark:bg-neutral-900 border hover:shadow-xl transition-all duration-300"
@@ -50,14 +59,14 @@ export default function AchievementsPage({ params }: { params: Promise<{ slug: s
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    {/* Overlay gradient */}
-                    <div className={cn("absolute inset-0 opacity-20 mix-blend-multiply", data.colorClass)} />
+                    {/* Overlay gradient using dynamic BG color */}
+                    <div className={cn("absolute inset-0 opacity-20 mix-blend-multiply", bgColorClass)} />
                 </div>
 
                 {/* Content Section */}
                 <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
                     <div className="flex flex-wrap items-center gap-3 mb-3">
-                         <span className={cn("px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white", data.colorClass)}>
+                         <span className={cn("px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-white", bgColorClass)}>
                             {item.issuer}
                          </span>
                          <div className="flex items-center gap-2 text-sm font-mono text-muted-foreground">
