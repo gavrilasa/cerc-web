@@ -13,11 +13,22 @@ import {
   Zap,
   BookOpen,
   ChevronRight,
+  Trophy,
+  Cpu,
 } from "lucide-react";
 import { gsap } from "gsap";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import LogoLoop from "@/components/LogoLoop";
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
+
+const techLogos = [
+  { node: <SiReact />, title: "React", href: "https://react.dev" },
+  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+];
 
 // Data dummy untuk "Focus Areas" agar halaman terlihat penuh
 const focusAreasDummy = [
@@ -130,11 +141,34 @@ export default function DivisionPage({ params }: { params: Promise<{ slug: strin
               ))}
            </div>
         </div>
+        
+        {/* 3. NEW Section: Technology Stack */}
+        <div className="bento-anim my-12 mx-4">
+            <h2 className="text-xl font-bold uppercase tracking-tight mb-6 flex items-center gap-3">
+                <Cpu className={cn("w-5 h-5", textColorClass)} />
+                Technology Stack
+            </h2>
+            <div style={{ height: '72px', position: 'relative', overflow: 'hidden'}}>
+            {/* Basic horizontal loop */}
+            <LogoLoop
+                logos={techLogos}
+                speed={40}
+                direction="left"
+                logoHeight={48}
+                gap={40}
+                hoverSpeed={0}
+                scaleOnHover
+                fadeOut
+                fadeOutColor=""
+                ariaLabel="Technology partners"
+            />
+            </div>
+        </div>
 
         <Separator className="my-12 bento-anim" />
 
-        {/* 3. Navigation Links (Redesigned untuk lebih menonjol) */}
-        <div className="bento-anim grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {/* 4. Navigation Links (Updated to 3 columns) */}
+        <div className="bento-anim grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {/* Projects Link */}
           <Link
             href={`/divisions/${slug}/projects`}
@@ -147,8 +181,8 @@ export default function DivisionPage({ params }: { params: Promise<{ slug: strin
                <ArrowRight className="w-6 h-6 text-white dark:text-black -rotate-45 group-hover:rotate-0 group-hover:scale-110 transition-all duration-300" />
             </div>
             <div className="z-10 mt-auto">
-              <h3 className="text-3xl font-black text-white dark:text-black uppercase tracking-tight">Division Projects</h3>
-              <p className="text-neutral-300 dark:text-neutral-700 mt-2">Explore our portfolio of innovations &rarr;</p>
+              <h3 className="text-2xl font-black text-white dark:text-black uppercase tracking-tight">Projects</h3>
+              <p className="text-neutral-300 dark:text-neutral-700 mt-2 text-sm">Explore our portfolio &rarr;</p>
             </div>
              <div className="absolute inset-0 bg-black/20 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
           </Link>
@@ -168,11 +202,33 @@ export default function DivisionPage({ params }: { params: Promise<{ slug: strin
                 <ArrowRight className="w-6 h-6 text-white -rotate-45 group-hover:rotate-0 group-hover:scale-110 transition-all duration-300" />
             </div>
             <div className="z-10 mt-auto">
-              <h3 className="text-3xl font-black text-white uppercase tracking-tight">Meet the Team</h3>
-              <p className="text-white/80 mt-2">See the researchers behind the work &rarr;</p>
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight">Members</h3>
+              <p className="text-white/80 mt-2 text-sm">Meet the researchers &rarr;</p>
             </div>
             {/* Subtle Pattern */}
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+          </Link>
+
+          {/* Achievements Link */}
+          <Link
+             href={`/divisions/${slug}/achievements`}
+            className={cn(
+               "group rounded-4xl p-8 relative overflow-hidden flex flex-col justify-between min-h-60 hover:shadow-xl transition-all cursor-pointer",
+               data.colorClass
+            )}
+          >
+            <div className="flex justify-between items-start z-10">
+                <div className="bg-black/20 p-3 rounded-full backdrop-blur-sm">
+                  <Trophy className="w-8 h-8 text-white" />
+                </div>
+                <ArrowRight className="w-6 h-6 text-white -rotate-45 group-hover:rotate-0 group-hover:scale-110 transition-all duration-300" />
+            </div>
+            <div className="z-10 mt-auto">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight">Awards</h3>
+              <p className="text-white/80 mt-2 text-sm">Hall of fame &rarr;</p>
+            </div>
+             {/* Subtle Pattern */}
+             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
           </Link>
         </div>
 

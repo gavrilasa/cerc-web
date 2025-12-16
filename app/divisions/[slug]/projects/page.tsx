@@ -16,7 +16,7 @@ export default function ProjectsPage({ params }: { params: Promise<{ slug: strin
   if (!data) return notFound();
 
   return (
-    <div className="min-h-screen w-full py-12 px-4 md:px-8 bg-background">
+    <div className="min-h-screen w-full px-4 py-2 md:py-4 space-y-8 bg-background">
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 border-b pb-6">
           <div>

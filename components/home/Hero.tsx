@@ -86,19 +86,19 @@ export function Hero() {
                                 alt="computer mini icon 3d"
                                 height={90}
                                 width={90}
-                                className="inline-block ml-2 -mt-8 rotate-6 group-hover:rotate-1 transition-all"
+                                className="hidden md:inline-block ml-2 -mt-8 rotate-6 group-hover:rotate-1 transition-all"
                             />
                             <br />
                             Engineering <br />
                             Research Club
                         </h1>
 
-                        <div className="flex flex-col md:flex-row gap-6 items-center mt-8 z-10">
+                        <div className="flex flex-row gap-6 items-center mt-8 z-10">
                             <Button className="rounded-full h-14 px-8 text-base bg-neutral-100 text-neutral-900 dark:bg-neutral-900 dark:text-white transition-transform active:scale-95 hover:bg-neutral-200 dark:hover:bg-neutral-800">
                                 Learn More
                             </Button>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1 md:gap-3">
                                 <div className="w-10 h-10 rounded-full border-2 border-neutral-100 dark:border-neutral-900 flex items-center justify-center">
                                     <Activity className="w-5 h-5" />
                                 </div>
@@ -203,7 +203,7 @@ export function Hero() {
 
                             <div className="pt-4">
                                 <button className="text-xs font-bold uppercase tracking-widest border-b border-neutral-100/40 dark:border-neutral-900/40 pb-1 hover:border-neutral-100 dark:hover:border-neutral-900 transition-colors">
-                                    Explore Our Staff Projects
+                                    Explore Our Member & Projects
                                 </button>
                             </div>
                         </div>
