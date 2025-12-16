@@ -24,7 +24,8 @@ import {
   } from "lucide-react";
   import Link from "next/link";
   import { prisma } from "@/lib/db";
-  import { handleSignOut } from "@/app/actions/auth"; // Pastikan import action ini ada
+  import { handleSignOut } from "@/app/actions/auth";
+  import { SidebarThemeToggle } from "@/components/admin/theme-toggle"; // <--- 1. Import ini
   
   // Helper to map icon strings to components
   const iconMap: Record<string, LucideIcon> = {
@@ -101,11 +102,15 @@ import {
           </SidebarGroup>
         </SidebarContent>
   
-        {/* --- TOMBOL SIGN OUT DI FOOTER --- */}
         <SidebarFooter>
           <SidebarMenu>
+            
+            {/* --- 2. Tambahkan Theme Toggle DISINI --- */}
+            <SidebarThemeToggle />
+  
+            {/* Tombol Sign Out */}
             <SidebarMenuItem>
-              <form action={handleSignOut} className="w-full">
+              <form action={handleSignOut} className="w-full py-2">
                 <SidebarMenuButton 
                   type="submit" 
                   tooltip="Sign Out"

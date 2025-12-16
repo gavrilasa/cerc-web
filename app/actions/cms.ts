@@ -1,6 +1,54 @@
 "use server";
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
+// --- DIVISIONS ---
+export async function createDivision(formData: FormData) {
+  const title = formData.get("title") as string;
+  const slug = formData.get("slug") as string;
+  const description = formData.get("description") as string;
+  const iconName = (formData.get("iconName") as string) || "FolderKanban";
+
+  await prisma.division.create({
+    data: {
+      title,
+      slug,
+      description,
+      iconName,
+      colorClass: "text-slate-900", // Default
+    },
+  });
+
+  revalidatePath("/admin", "layout");
+}
+
+export async function updateDivision(formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = formData.get("title") as string;
+  const slug = formData.get("slug") as string;
+  const description = formData.get("description") as string;
+  const iconName = (formData.get("iconName") as string) || "FolderKanban";
+
+  await prisma.division.update({
+    where: { id },
+    data: {
+      title,
+      slug,
+      description,
+      iconName,
+    },
+  });
+
+  revalidatePath("/admin", "layout");
+  revalidatePath(`/admin/divisions/${slug}`);
+}
+
+export async function deleteDivision(id: string) {
+  await prisma.division.delete({ where: { id } });
+  revalidatePath("/admin", "layout");
+  redirect("/admin");
+}
 
 // --- PROJECTS ---
 export async function createProject(formData: FormData) {

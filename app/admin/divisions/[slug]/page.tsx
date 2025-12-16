@@ -1,15 +1,17 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { deleteProject, deleteAchievement } from "@/app/actions/cms";
+import { deleteProject, deleteAchievement, deleteDivision } from "@/app/actions/cms";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, FolderKanban, Users, Trophy, Calendar, Award, Github, ExternalLink, Linkedin } from "lucide-react";
+import { Trash2, FolderKanban, Users, Trophy, Calendar, Award, Github, ExternalLink, Linkedin, Edit } from "lucide-react";
 import { ProjectDialog, MemberDialog, AchievementDialog } from "@/components/admin/dialogs";
 import { SortControl } from "@/components/admin/sort-control";
 import { PaginationControl } from "@/components/admin/pagination-control";
 import { MemberCardActions } from "@/components/admin/member-card-actions";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DivisionForm } from "@/components/admin/forms";
 
 const PAGE_SIZE = 9;
 
@@ -48,14 +50,42 @@ export default async function DivisionManager({
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-20 px-4 sm:px-6">
-      <div className="flex flex-col gap-2 border-b pb-6">
+      <div className="flex flex-col gap-4 border-b pb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground uppercase">{division.title}</h1>
-            <span className="w-fit px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-mono font-medium border">
-                {division.slug}
-            </span>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold tracking-tight text-foreground uppercase">{division.title}</h1>
+              <span className="w-fit px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-xs font-mono font-medium border">
+                  {division.slug}
+              </span>
+            </div>
+
+            {/* --- ACTION BUTTONS (Edit / Delete) --- */}
+            <div className="flex items-center gap-2">
+              {/* EDIT */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Edit className="mr-2 h-4 w-4" /> Edit Division
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Division</DialogTitle>
+                  </DialogHeader>
+                  <DivisionForm data={division} />
+                </DialogContent>
+              </Dialog>
+
+              {/* DELETE */}
+              <form action={deleteDivision.bind(null, division.id)}>
+                <Button variant="destructive" size="sm">
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                </Button>
+              </form>
+            </div>
+            {/* ------------------------------------- */}
         </div>
-        <p className="text-muted-foreground max-w-2xl">Manage content, team members, and awards.</p>
+        <p className="text-muted-foreground max-w-2xl">{division.description}</p>
       </div>
 
       <Tabs defaultValue="projects" className="space-y-8">
@@ -78,18 +108,15 @@ export default async function DivisionManager({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {division.projects.map((p) => (
               <Card key={p.id} className="overflow-hidden flex flex-col group border-border hover:border-primary/20 transition-all duration-300 hover:shadow-lg h-full">
-                {/* Image Container: Removed any padding above/around this div by ensuring it's the first child of Card */}
                 <div className="relative aspect-video w-full bg-muted overflow-hidden shrink-0">
                     <Image src={p.imageUrl} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 
-                {/* Content: Adjusted padding to be balanced */}
                 <CardContent className=" flex-1 flex flex-col gap-3">
                     <div className="space-y-1">
                       <div className="flex justify-between items-start gap-2">
                           <h3 className="font-semibold text-lg leading-tight line-clamp-1 group-hover:text-primary transition-colors">{p.title}</h3>
                           
-                          {/* OPTIONAL LINKS DISPLAY */}
                           <div className="flex gap-2 shrink-0 pt-0.5">
                             {p.githubUrl && (
                                 <a href={p.githubUrl} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" title="GitHub Repo">
@@ -112,7 +139,6 @@ export default async function DivisionManager({
                     <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{p.description}</p>
                 </CardContent>
 
-                {/* Footer: Reduced vertical padding (py-3) to remove empty space below */}
                 <CardFooter className="p-6 border-t bg-muted/20 mt-auto flex justify-between items-center">
                     <span className="text-[10px] text-muted-foreground font-mono">{new Date(p.createdAt).toLocaleDateString()}</span>
                     <div className="flex gap-1">
@@ -139,22 +165,17 @@ export default async function DivisionManager({
              <MemberDialog divisionId={division.id} divisionSlug={division.slug} />
           </div>
 
-          {/* CLEAN HORIZONTAL MEMBER CARDS */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
              {division.members.map((m) => (
                <div key={m.id} className="flex items-center gap-4 p-4 rounded-xl border bg-card hover:border-primary/30 transition-all shadow-sm group relative overflow-hidden">
-                  
-                  {/* Image */}
                   <div className="relative h-16 w-16 shrink-0 rounded-full overflow-hidden border-2 border-background shadow-md">
                     <Image src={m.imageUrl} alt={m.name} fill className="object-cover" />
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-sm truncate text-foreground">{m.name}</h4>
                     <p className="text-xs text-muted-foreground truncate uppercase font-medium tracking-wide mb-1.5">{m.role}</p>
                     
-                    {/* Socials (Optional) */}
                     <div className="flex gap-2">
                         {m.github && (
                             <a href={m.github} target="_blank" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -169,7 +190,6 @@ export default async function DivisionManager({
                     </div>
                   </div>
 
-                  {/* Actions (Separate Component) */}
                   <div className="ml-auto pl-2">
                      <MemberCardActions member={m} divisionSlug={slug} />
                   </div>

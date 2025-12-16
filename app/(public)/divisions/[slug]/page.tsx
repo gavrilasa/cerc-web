@@ -1,47 +1,35 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import LogoLoop from "@/components/LogoLoop";
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
+import { divisionSpecificData } from "@/data/data"; // Import the data file
 import {
   ArrowRight,
   Users,
   FolderKanban,
-  Calendar,
   Target,
-  Zap,
-  BookOpen,
+  Cpu,
   ChevronRight,
   Trophy,
-  Cpu,
   AppWindow,
   Network,
   Clapperboard,
   Globe,
-  LucideIcon
+  LucideIcon,
+  HelpCircle
 } from "lucide-react";
 
-// --- Icon Mapping Helper ---
-const IconMap: Record<string, LucideIcon> = {
-  AppWindow, Cpu, Network, Clapperboard, Globe
+// --- Icon Mapping Helper for the Main Hero Icon ---
+const HeroIconMap: Record<string, LucideIcon> = {
+  "software-engineering": AppWindow,
+  "network-engineering": Network,
+  "embedded-systems": Cpu,
+  "multimedia-creative": Clapperboard,
+  // Fallbacks
+  "web": Globe,
 };
-
-// --- Static Data for Visuals ---
-const techLogos = [
-  { node: <SiReact />, title: "React", href: "https://react.dev" },
-  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
-  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
-  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-];
-
-const focusAreasDummy = [
-  { icon: Target, title: "Core Fundamentals", desc: "Mastering the essential theory and principles." },
-  { icon: Zap, title: "Rapid Prototyping", desc: "Building MVPs and proof-of-concepts quickly." },
-  { icon: BookOpen, title: "Research & Publication", desc: "Documenting findings and contributing to knowledge." },
-];
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -54,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function DivisionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  // 1. Fetch Data
+  // 1. Fetch Dynamic Data from DB
   const division = await prisma.division.findUnique({
     where: { slug },
     include: {
@@ -66,14 +54,19 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
 
   if (!division) return notFound();
 
-  // 2. Prepare Dynamic Assets
-  const Icon = IconMap[division.iconName] || FolderKanban;
-  
-  // Convert "text-blue-600" -> "bg-blue-600" for the bento cards
-  // Fallback to blue if colorClass is missing
-  const baseColor = division.colorClass || "text-blue-600";
-  const bgColorClass = baseColor.replace("text-", "bg-");
-  const textColorClass = baseColor; // e.g. "text-blue-600"
+  // 2. Resolve Static Data (Focus Areas & Tech Stack)
+  // Use the slug to find the correct data, or fallback to Software if undefined
+  const staticData = divisionSpecificData[slug] || divisionSpecificData["software-engineering"];
+  const { focusAreas, techLogos } = staticData;
+
+  // 3. Resolve Hero Icon
+  const HeroIcon = HeroIconMap[slug] || HeroIconMap[division.iconName] || HelpCircle;
+
+  // --- THEME SETTINGS ---
+  // Hardcoded to Blue as requested
+  const baseColor = "text-blue-600";
+  const bgColorClass = "bg-blue-600";
+  const textColorClass = "text-blue-600";
 
   // Dynamic Stats from DB Counts
   const stats = [
@@ -92,7 +85,9 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
             Home
           </Link>
           <ChevronRight className="w-3 h-3" />
-          <span>Divisions</span>
+          <Link href="/divisions" className="hover:text-foreground transition-colors">
+            Divisions
+          </Link>
           <ChevronRight className="w-3 h-3" />
           <span className={cn("font-bold", textColorClass)}>{division.title}</span>
         </div>
@@ -104,7 +99,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
           <div className="lg:col-span-2 bg-neutral-900 dark:bg-neutral-100 rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between relative overflow-hidden text-neutral-100 dark:text-neutral-900 shadow-lg group">
             <div className="relative z-10">
                <div className="inline-flex p-3 rounded-2xl mb-6 backdrop-blur-sm bg-white/10 dark:bg-black/10 border border-white/10 dark:border-black/5">
-                <Icon className="w-8 h-8 text-white dark:text-black" />
+                <HeroIcon className="w-8 h-8 text-white dark:text-black" />
               </div>
               <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-[0.9] mb-4">
                 {division.title}
@@ -115,7 +110,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
             </div>
             
             {/* Background Icon Decor */}
-            <Icon className="absolute -right-12 -bottom-12 w-64 h-64 opacity-5 rotate-12 pointer-events-none text-white dark:text-black transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-12" />
+            <HeroIcon className="absolute -right-12 -bottom-12 w-64 h-64 opacity-5 rotate-12 pointer-events-none text-white dark:text-black transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-12" />
           </div>
 
           {/* Stats Column (Dynamic) */}
@@ -125,7 +120,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
                 key={i} 
                 className={cn(
                   "flex-1 rounded-[2.5rem] p-8 flex flex-col justify-center border border-transparent relative overflow-hidden group",
-                  bgColorClass // Dynamic Background Color
+                  bgColorClass 
                 )}
               >
                  {/* Decorative Blob */}
@@ -138,16 +133,16 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
 
-        {/* 2. Focus Areas */}
+        {/* 2. Focus Areas (Dynamic based on slug) */}
         <div className="my-12">
            <h2 className="text-xl font-bold uppercase tracking-tight mb-6 flex items-center gap-3">
               <Target className={cn("w-5 h-5", textColorClass)} />
               Our Key Focus Areas
            </h2>
            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {focusAreasDummy.map((item, i) => (
-                 <div key={i} className="bg-card border border-border rounded-2xl p-6 flex items-start gap-4 hover:border-primary/50 transition-colors">
-                    <div className={cn("p-2 rounded-lg shrink-0 bg-opacity-10", textColorClass)}>
+              {focusAreas.map((item, i) => (
+                 <div key={i} className="bg-card border border-border rounded-2xl p-6 flex items-start gap-4 hover:border-primary/50 transition-colors group">
+                    <div className={cn("p-2 rounded-lg shrink-0 bg-opacity-10 group-hover:scale-110 transition-transform", textColorClass)}>
                        <item.icon className="w-5 h-5" />
                     </div>
                     <div>
@@ -159,7 +154,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
            </div>
         </div>
         
-        {/* 3. Tech Stack */}
+        {/* 3. Tech Stack (Dynamic based on slug) */}
         <div className="my-12">
             <h2 className="text-xl font-bold uppercase tracking-tight mb-6 flex items-center gap-3">
                 <Cpu className={cn("w-5 h-5", textColorClass)} />
@@ -183,7 +178,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
 
         <Separator className="my-12" />
 
-        {/* 4. Navigation Links (The 3 Big Cards) */}
+        {/* 4. Navigation Links */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           
           {/* Projects Link */}
@@ -209,7 +204,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
              href={`/divisions/${slug}/members`}
             className={cn(
               "group rounded-[2.5rem] p-8 relative overflow-hidden flex flex-col justify-between min-h-60 hover:shadow-xl transition-all cursor-pointer",
-              bgColorClass // Dynamic Background
+              bgColorClass
             )}
           >
             <div className="flex justify-between items-start z-10">
@@ -222,7 +217,6 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
               <h3 className="text-2xl font-black text-white uppercase tracking-tight">Members</h3>
               <p className="text-white/80 mt-2 text-sm">Meet the researchers &rarr;</p>
             </div>
-            {/* Subtle Noise Texture */}
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
           </Link>
 
@@ -231,7 +225,7 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
              href={`/divisions/${slug}/achievements`}
             className={cn(
                "group rounded-[2.5rem] p-8 relative overflow-hidden flex flex-col justify-between min-h-60 hover:shadow-xl transition-all cursor-pointer",
-               bgColorClass // Dynamic Background
+               bgColorClass
             )}
           >
             <div className="flex justify-between items-start z-10">
