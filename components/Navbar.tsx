@@ -117,6 +117,7 @@ export function Navbar() {
 				accentColor="#3b82f6"
 				onMenuOpen={() => setIsOpen(true)}
 				onMenuClose={() => setIsOpen(false)}
+				className="font-mono"
 			/>
 		</>
 	);

@@ -51,7 +51,7 @@ export default async function DashboardOverview() {
 
 function StatsCard({ title, value, icon: Icon }: { title: string, value: number, icon: any }) {
   return (
-    <Card>
+    <Card className="px-4 py-8">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <Icon className="h-4 w-4 text-muted-foreground" />

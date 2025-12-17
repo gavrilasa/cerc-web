@@ -120,8 +120,8 @@ export function MemberDialog({ divisionId, divisionSlug, data }: { divisionId?: 
         </DialogHeader>
         <form action={handleSubmit} className="flex flex-col gap-4 mt-4">
           <div className="flex justify-center">
-             <div className="w-32">
-                <ImageUploader value={imageUrl} onChange={setImageUrl} className="h-32 w-32 rounded-full" />
+             <div className="w-48">
+                <ImageUploader value={imageUrl} onChange={setImageUrl} className="h-48 w-48 rounded-xl" />
              </div>
           </div>
           <div className="grid grid-cols-2 gap-4">

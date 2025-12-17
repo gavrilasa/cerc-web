@@ -177,7 +177,7 @@ export function MemberForm({ divisionId, divisionSlug }: { divisionId: string, d
             <ImageUploader 
                 value={imageUrl} 
                 onChange={setImageUrl} 
-                className="h-32 w-32 rounded-full" 
+                className="h-32 w-32" 
             />
          </div>
          
