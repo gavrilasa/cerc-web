@@ -24,8 +24,8 @@ export function SortControl() {
           <SelectValue placeholder="Sort" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="desc">Newest First</SelectItem>
-          <SelectItem value="asc">Oldest First</SelectItem>
+          <SelectItem value="desc">Latest</SelectItem>
+          <SelectItem value="asc">Oldest</SelectItem>
         </SelectContent>
       </Select>
     </div>

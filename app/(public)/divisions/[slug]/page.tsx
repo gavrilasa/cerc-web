@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import LogoLoop from "@/components/LogoLoop";
-import { divisionSpecificData } from "@/data/data"; // Import the data file
+import { divisionSpecificData } from "@/data/data";
 import {
   ArrowRight,
   Users,
@@ -23,10 +23,10 @@ import {
 
 // --- Icon Mapping Helper for the Main Hero Icon ---
 const HeroIconMap: Record<string, LucideIcon> = {
-  "software-engineering": AppWindow,
-  "network-engineering": Network,
-  "embedded-systems": Cpu,
-  "multimedia-creative": Clapperboard,
+  "software": AppWindow,
+  "network": Network,
+  "embedded": Cpu,
+  "multimedia": Clapperboard,
   // Fallbacks
   "web": Globe,
 };
