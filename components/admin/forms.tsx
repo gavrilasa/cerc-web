@@ -5,239 +5,329 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { 
   createProject, 
+  updateProject, 
   createMember, 
+  updateMember, 
   createAchievement, 
-  createDivision,
+  updateAchievement, 
+  createTechStack, 
+  createDivision, 
   updateDivision 
 } from "@/app/actions/cms";
 import { toast } from "sonner";
 
-// Define Data Interface
-interface DivisionData {
-  id: string;
-  title: string;
-  slug: string;
-  description: string;
-  iconName: string;
-}
-
-// --- Division Form (Create & Edit) ---
-export function DivisionForm({ 
-  onSuccess, 
-  data 
-}: { 
-  onSuccess?: () => void, 
-  data?: DivisionData // Optional: If present, we are in "Edit Mode"
-}) {
+// --- DIVISION FORM ---
+export function DivisionForm({ onSuccess, data }: { onSuccess?: () => void, data?: any }) {
   const isEditing = !!data;
 
-  const handleSubmit = async (formData: FormData) => {
-    const title = formData.get("title");
-    const slug = formData.get("slug");
-    
-    if (!title || !slug) {
-      toast.error("Title and Slug are required.");
-      return;
+  async function handleSubmit(formData: FormData) {
+    if (isEditing) {
+        formData.append("id", data.id);
+        await updateDivision(formData);
+        toast.success("Division updated");
+    } else {
+        await createDivision(formData);
+        toast.success("Division created");
     }
+    if (onSuccess) onSuccess();
+  }
+
+  return (
+    <form action={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+                <Label>Title</Label>
+                <Input name="title" placeholder="Software Engineering" defaultValue={data?.title} required />
+            </div>
+            <div className="space-y-2">
+                <Label>Slug</Label>
+                <Input name="slug" placeholder="software" defaultValue={data?.slug} required />
+            </div>
+        </div>
+        
+        <div className="space-y-2">
+            <Label>Icon Name</Label>
+            <Input name="iconName" placeholder="AppWindow, Network, Cpu..." defaultValue={data?.iconName} />
+            <p className="text-[10px] text-muted-foreground">Matches Lucide React icon names</p>
+        </div>
+
+        <div className="space-y-2">
+            <Label>Description</Label>
+            <Textarea name="description" placeholder="Short description..." defaultValue={data?.description} required />
+        </div>
+
+        <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Create Division"}</Button>
+    </form>
+  );
+}
+
+// --- PROJECT FORM ---
+export function ProjectForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
+  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+  const isEditing = !!data;
+
+  async function handleSubmit(formData: FormData) {
+    if (!imageUrl) { toast.error("Image required"); return; }
+    formData.append("imageUrl", imageUrl);
+    
+    if (isEditing) {
+        formData.append("id", data.id);
+        await updateProject(formData);
+        toast.success("Project updated");
+    } else {
+        await createProject(formData);
+        toast.success("Project created");
+    }
+    closeDialog();
+  }
+
+  return (
+    <form action={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label>Division</Label>
+        <Select name="divisionId" defaultValue={data?.divisionId} required>
+            <SelectTrigger><SelectValue placeholder="Select Division" /></SelectTrigger>
+            <SelectContent>
+                {divisions.map((d: any) => (
+                    <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Cover Image</Label>
+        {/* Fix: Removed 'value' prop, only using 'defaultValue' and 'onUploadComplete' */}
+        <ImageUploader onUploadComplete={setImageUrl} defaultValue={imageUrl} />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+            <Label>Title</Label>
+            <Input name="title" defaultValue={data?.title} required />
+        </div>
+        <div className="space-y-2">
+            <Label>Tags</Label>
+            <Input name="tags" defaultValue={data?.tags?.join(", ")} placeholder="React, AI, IoT" required />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+            <Label>GitHub URL</Label>
+            <Input name="githubUrl" defaultValue={data?.githubUrl} placeholder="https://github.com/..." />
+        </div>
+        <div className="space-y-2">
+            <Label>Demo URL</Label>
+            <Input name="demoUrl" defaultValue={data?.demoUrl} placeholder="https://..." />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Description</Label>
+        <Textarea name="description" defaultValue={data?.description} required />
+      </div>
+
+      <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Create Project"}</Button>
+    </form>
+  );
+}
+
+// --- MEMBER FORM ---
+export function MemberForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
+  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+  const isEditing = !!data;
+  
+  async function handleSubmit(formData: FormData) {
+    if (!imageUrl) { toast.error("Image required"); return; }
+    formData.append("imageUrl", imageUrl);
 
     if (isEditing) {
-      await updateDivision(formData);
-      toast.success("Division updated!");
+        formData.append("id", data.id);
+        await updateMember(formData);
+        toast.success("Member updated");
     } else {
-      await createDivision(formData);
-      toast.success("Division created!");
+        await createMember(formData);
+        toast.success("Member added");
     }
-    
-    if (onSuccess) onSuccess();
-  };
+    closeDialog();
+  }
 
   return (
-    <form action={handleSubmit} className="flex flex-col gap-4">
-      {isEditing && <input type="hidden" name="id" value={data.id} />}
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Title</label>
-          <Input 
-            name="title" 
-            placeholder="e.g. Software Engineering" 
-            defaultValue={data?.title} 
-            required 
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Slug (URL)</label>
-          <Input 
-            name="slug" 
-            placeholder="e.g. software" 
-            defaultValue={data?.slug} 
-            required 
-          />
-        </div>
-      </div>
-      
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Icon Name</label>
-        <Input 
-          name="iconName" 
-          placeholder="e.g. Cpu, Network, AppWindow" 
-          defaultValue={data?.iconName} 
-        />
-        <p className="text-[10px] text-muted-foreground">
-          Options: AppWindow, Cpu, Network, Clapperboard, FolderKanban
-        </p>
+    <form action={handleSubmit} className="space-y-4">
+      <div className="flex gap-4">
+          <div className="w-1/3 space-y-2">
+             <Label>Photo</Label>
+             <ImageUploader onUploadComplete={setImageUrl} defaultValue={imageUrl} />
+          </div>
+          <div className="w-2/3 space-y-4">
+             <div className="space-y-2">
+                <Label>Division</Label>
+                <Select name="divisionId" defaultValue={data?.divisionId} required>
+                    <SelectTrigger><SelectValue placeholder="Select Division" /></SelectTrigger>
+                    <SelectContent>
+                        {divisions.map((d: any) => (
+                            <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+             </div>
+             <div className="space-y-2">
+                <Label>Full Name</Label>
+                <Input name="name" defaultValue={data?.name} required />
+             </div>
+          </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">Description</label>
-        <Textarea 
-          name="description" 
-          placeholder="Short description..." 
-          defaultValue={data?.description} 
-          required 
-        />
-      </div>
-
-      <Button type="submit" className="w-full">
-        <Plus className="mr-2 h-4 w-4" /> 
-        {isEditing ? "Save Changes" : "Create Division"}
-      </Button>
-    </form>
-  );
-}
-
-// --- Project Form ---
-export function ProjectForm({ divisionId, divisionSlug }: { divisionId: string, divisionSlug: string }) {
-  const [imageUrl, setImageUrl] = useState("");
-
-  const handleSubmit = async (formData: FormData) => {
-    if (!imageUrl) {
-      toast.error("Please upload an image");
-      return; 
-    }
-    formData.set("imageUrl", imageUrl);
-    
-    await createProject(formData);
-    toast.success("Project added!");
-    setImageUrl(""); 
-  };
-
-  return (
-    <form action={handleSubmit} className="flex flex-col gap-4">
-      <input type="hidden" name="divisionId" value={divisionId} />
-      <input type="hidden" name="divisionSlug" value={divisionSlug} />
-      
-      <div className="grid gap-2">
-        <label className="text-sm font-medium">Cover Image</label>
-        <ImageUploader 
-            value={imageUrl} 
-            onChange={setImageUrl} 
-            className="h-48 w-full max-w-md aspect-video" 
-        />
+          <Label>Role</Label>
+          <Input name="role" defaultValue={data?.role} placeholder="e.g. Head of Division" required />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Input name="title" placeholder="Project Title" required />
-        <Input name="tags" placeholder="Tags (React, AI)" required />
+          <div className="space-y-2">
+            <Label>GitHub</Label>
+            <Input name="github" defaultValue={data?.github} />
+          </div>
+          <div className="space-y-2">
+            <Label>LinkedIn</Label>
+            <Input name="linkedin" defaultValue={data?.linkedin} />
+          </div>
       </div>
-      <Textarea name="description" placeholder="Description" required />
-      
-      <Button type="submit" className="w-fit"><Plus className="mr-2 h-4 w-4" /> Create Project</Button>
+
+      <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Add Member"}</Button>
     </form>
   );
 }
 
-// --- Member Form ---
-export function MemberForm({ divisionId, divisionSlug }: { divisionId: string, divisionSlug: string }) {
-  const [imageUrl, setImageUrl] = useState("");
+// --- ACHIEVEMENT FORM ---
+export function AchievementForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
+  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+  const isEditing = !!data;
+  
+  async function handleSubmit(formData: FormData) {
+    if (!imageUrl) { toast.error("Image required"); return; }
+    formData.append("imageUrl", imageUrl);
 
-  const handleSubmit = async (formData: FormData) => {
-    if (!imageUrl) {
-      toast.error("Please upload a photo");
-      return;
+    if (isEditing) {
+        formData.append("id", data.id);
+        await updateAchievement(formData);
+        toast.success("Achievement updated");
+    } else {
+        await createAchievement(formData);
+        toast.success("Achievement added");
     }
-    formData.set("imageUrl", imageUrl);
-    
-    await createMember(formData);
-    toast.success("Member added!");
-    setImageUrl("");
-  };
+    closeDialog();
+  }
 
   return (
-    <form action={handleSubmit} className="flex flex-col gap-4">
-      <input type="hidden" name="divisionId" value={divisionId} />
-      <input type="hidden" name="divisionSlug" value={divisionSlug} />
-      
-      <div className="flex gap-6 items-start">
-         <div className="shrink-0">
-            <label className="text-sm font-medium mb-2 block">Photo</label>
-            <ImageUploader 
-                value={imageUrl} 
-                onChange={setImageUrl} 
-                className="h-32 w-32" 
-            />
+    <form action={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label>Division</Label>
+        <Select name="divisionId" defaultValue={data?.divisionId} required>
+            <SelectTrigger><SelectValue placeholder="Select Division" /></SelectTrigger>
+            <SelectContent>
+                {divisions.map((d: any) => (
+                    <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Evidence Image</Label>
+        <ImageUploader onUploadComplete={setImageUrl} defaultValue={imageUrl} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Title</Label>
+        <Input name="title" defaultValue={data?.title} required />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Description</Label>
+        <Textarea name="description" defaultValue={data?.description} required />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+         <div className="space-y-2">
+            <Label>Date</Label>
+            <Input name="date" defaultValue={data?.date} placeholder="Nov 2024" required />
          </div>
-         
-         <div className="flex-1 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-                <Input name="name" placeholder="Full Name" required />
-                <Input name="role" placeholder="Role" required />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-                <Input name="github" placeholder="GitHub URL" />
-                <Input name="linkedin" placeholder="LinkedIn URL" />
-            </div>
+         <div className="space-y-2">
+            <Label>Issuer</Label>
+            <Input name="issuer" defaultValue={data?.issuer} placeholder="e.g. Google" required />
          </div>
       </div>
-      <Button type="submit" className="w-fit self-end"><Plus className="mr-2 h-4 w-4" /> Add Member</Button>
+
+      <div className="space-y-2">
+        <Label>Winner (Team/Person)</Label>
+        <Input name="winner" defaultValue={data?.winner} required />
+      </div>
+
+      <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Add Achievement"}</Button>
     </form>
   );
 }
 
-// --- Achievement Form ---
-export function AchievementForm({ divisionId, divisionSlug }: { divisionId: string, divisionSlug: string }) {
-  const [imageUrl, setImageUrl] = useState("");
+// --- TECH STACK FORM ---
+export function TechStackForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
+  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+  
+  // TechStack is mostly create/delete, so we ignore updating for now to simplify
+  // If you need update, you can uncomment and use 'isEditing' logic similar to above.
 
-  const handleSubmit = async (formData: FormData) => {
-    if (!imageUrl) {
-      toast.error("Please upload an image");
-      return;
-    }
-    formData.set("imageUrl", imageUrl);
+  async function handleSubmit(formData: FormData) {
+    if (!imageUrl) { toast.error("Logo required"); return; }
+    formData.append("imageUrl", imageUrl);
     
-    await createAchievement(formData);
-    toast.success("Achievement added!");
-    setImageUrl("");
-  };
+    await createTechStack(formData);
+    toast.success("Tech added");
+    closeDialog();
+  }
 
   return (
-    <form action={handleSubmit} className="flex flex-col gap-4">
-      <input type="hidden" name="divisionId" value={divisionId} />
-      <input type="hidden" name="divisionSlug" value={divisionSlug} />
-      
-      <div className="grid gap-2">
-        <label className="text-sm font-medium">Documentation</label>
-        <ImageUploader 
-            value={imageUrl} 
-            onChange={setImageUrl} 
-            className="h-40 w-full max-w-md" 
-        />
+    <form action={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label>Division</Label>
+        <Select name="divisionId" defaultValue={data?.divisionId} required>
+            <SelectTrigger><SelectValue placeholder="Select Division" /></SelectTrigger>
+            <SelectContent>
+                {divisions.map((d: any) => (
+                    <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-          <Input name="title" placeholder="Title" required />
-          <Input name="date" placeholder="Date" required />
+      <div className="flex gap-4 items-start">
+          <div className="w-1/3 space-y-2">
+             <Label>Logo</Label>
+             <ImageUploader onUploadComplete={setImageUrl} defaultValue={imageUrl} />
+          </div>
+          <div className="w-2/3 space-y-4">
+             <div className="space-y-2">
+                <Label>Technology Name</Label>
+                <Input name="name" defaultValue={data?.name} placeholder="e.g. React" required />
+             </div>
+             <div className="space-y-2">
+                <Label>Website URL</Label>
+                <Input name="websiteUrl" defaultValue={data?.websiteUrl} placeholder="https://..." />
+             </div>
+          </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-          <Input name="issuer" placeholder="Issuer" required />
-          <Input name="winner" placeholder="Winner" required />
-      </div>
-      <Textarea name="description" placeholder="Description" required />
-      
-      <Button type="submit" className="w-fit"><Plus className="mr-2 h-4 w-4" /> Add Achievement</Button>
+
+      <Button type="submit" className="w-full">Add Technology</Button>
     </form>
   );
 }

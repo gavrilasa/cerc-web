@@ -120,3 +120,20 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+@layer utilities {
+	.text-balance {
+	  text-wrap: balance;
+	}
+  }
+  
+  /* Custom Selection Color from Design */
+  ::selection {
+	background-color: #C6A675;
+	color: black;
+  }
+  
+  /* Smooth Scrolling */
+  html {
+	scroll-behavior: smooth;
+  }

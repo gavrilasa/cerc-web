@@ -17,10 +17,10 @@ export function Navbar() {
 
 	const menuItems = [
 		{ label: "Home", ariaLabel: "Home", link: "/" },
-		{ label: "Software", ariaLabel: "Software Engineering", link: "/divisions/software" },
-		{ label: "Network", ariaLabel: "Network & Security", link: "/divisions/network" },
-		{ label: "Embedded", ariaLabel: "Embedded & IoT", link: "/divisions/embedded" },
-		{ label: "Multimedia", ariaLabel: "Multimedia & Design", link: "/divisions/multimedia" },
+		{ label: "Divisions", ariaLabel: "Divisions", link: "/divisions" },
+		{ label: "Projects", ariaLabel: "Projects", link: "/projects" },
+		{ label: "Tech Stack", ariaLabel: "Tech Stack", link: "/tech-stack" },
+		{ label: "Achievements", ariaLabel: "Achievements", link: "/achievements" },
 	];
 
 	const socialItems = [

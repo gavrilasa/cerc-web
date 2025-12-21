@@ -1,9 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Github, Linkedin, ExternalLink, Calendar, Award } from "lucide-react";
+import { Github, Linkedin, ExternalLink, Calendar, Award, Layers, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 // --- Types ---
 interface ProjectCardProps {
@@ -14,6 +15,7 @@ interface ProjectCardProps {
   createdAt: Date;
   githubUrl?: string | null;
   demoUrl?: string | null;
+  divisionName?: string; // Added divisionName
   // Slot for Admin Actions (Edit/Delete)
   actionSlot?: React.ReactNode; 
 }
@@ -24,6 +26,7 @@ interface MemberCardProps {
   imageUrl: string;
   github?: string | null;
   linkedin?: string | null;
+  divisionName?: string; // Added divisionName
   // Slot for Admin Actions
   actionSlot?: React.ReactNode;
 }
@@ -36,6 +39,7 @@ interface AchievementCardProps {
   issuer: string;
   winner: string;
   colorClass?: string; // e.g. "bg-blue-600"
+  divisionName?: string; // Added divisionName
   // Slot for Admin Actions
   actionSlot?: React.ReactNode;
 }
@@ -49,6 +53,7 @@ export function ProjectCard({
   createdAt,
   githubUrl,
   demoUrl,
+  divisionName,
   actionSlot,
 }: ProjectCardProps) {
   return (
@@ -62,6 +67,15 @@ export function ProjectCard({
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        {/* Division Badge Overlay */}
+        {divisionName && (
+          <div className="absolute top-4 left-4">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-xs font-bold uppercase tracking-wider border-none">
+              {divisionName}
+            </Badge>
+          </div>
+        )}
       </div>
 
       {/* Content Section */}
@@ -131,10 +145,21 @@ export function MemberCard({
   imageUrl,
   github,
   linkedin,
+  divisionName,
   actionSlot,
 }: MemberCardProps) {
   return (
     <div className="group relative flex flex-col items-center bg-card border border-border rounded-4xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 h-full">
+      
+      {/* Division Badge */}
+      {divisionName && (
+        <div className="absolute top-4 right-4">
+           <Badge variant="outline" className="text-[10px] uppercase font-bold text-muted-foreground border-border/50">
+              {divisionName}
+           </Badge>
+        </div>
+      )}
+
       {/* Avatar with Ring */}
       <div className="relative mb-6">
         <div className="relative h-32 w-32 rounded-xl overflow-hidden shadow-lg group-hover:scale-105 transition-transform duration-500">
@@ -206,10 +231,9 @@ export function AchievementCard({
   issuer,
   winner,
   colorClass = "bg-blue-600",
+  divisionName,
   actionSlot,
 }: AchievementCardProps) {
-  const textColorClass = colorClass.replace("bg-", "text-");
-
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-4xl bg-card border border-border hover:border-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full">
       {/* Image Section */}
@@ -221,6 +245,15 @@ export function AchievementCard({
           className="object-cover group-hover:scale-105 transition-transform duration-700"
         />
         <div className={cn("absolute inset-0 opacity-10 mix-blend-multiply group-hover:opacity-0 transition-opacity", colorClass)} />
+        
+        {/* Division Badge */}
+        {divisionName && (
+          <div className="absolute top-4 right-4">
+             <Badge className="bg-black/80 hover:bg-black text-white border-none text-[10px] uppercase font-bold tracking-widest backdrop-blur-md">
+                {divisionName}
+             </Badge>
+          </div>
+        )}
       </div>
 
       {/* Content Section */}
@@ -229,7 +262,7 @@ export function AchievementCard({
         <div className="flex items-center gap-3 mb-4">
           <span className={cn(
             "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm", 
-            "text-black dark:text-white" // Force text-white to ensure visibility in dark mode (overriding any potential dark text from colorClass)
+            "text-black dark:text-white border border-border bg-secondary/50"
           )}>
             {issuer}
           </span>
