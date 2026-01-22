@@ -11,14 +11,19 @@ export const SectionHeader = ({
   description?: string;
   className?: string;
 }) => {
+  const isCentered = className?.includes("text-center");
+  
   return (
-    <div className={cn("mb-16", className)}>
-      <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-[0.9] mb-6 dark:text-white text-neutral-900">
-        {title} <br />
-        {highlight && <span className="text-[#C6A675]">{highlight}</span>}
+    <div className={cn("mb-6 md:mb-8", className)}>
+      <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-foreground">
+        {title}
+        {highlight && <span className="text-[#C6A675] ml-2">{highlight}</span>}
       </h2>
       {description && (
-        <p className="text-lg text-neutral-500 dark:text-neutral-400 max-w-xl leading-relaxed">
+        <p className={cn(
+          "text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed",
+          isCentered && "mx-auto"
+        )}>
           {description}
         </p>
       )}

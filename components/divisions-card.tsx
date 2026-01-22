@@ -38,6 +38,7 @@ interface AchievementCardProps {
   date: string;
   issuer: string;
   winner: string;
+  linkUrl?: string | null; // Optional external link
   colorClass?: string; // e.g. "bg-blue-600"
   divisionName?: string; // Added divisionName
   // Slot for Admin Actions
@@ -57,21 +58,20 @@ export function ProjectCard({
   actionSlot,
 }: ProjectCardProps) {
   return (
-    <div className="group flex flex-col bg-card border border-border rounded-4xl overflow-hidden hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 transition-all duration-300 h-full">
+    <div className="group flex flex-col bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 transition-all duration-300 h-full">
       {/* Image Section */}
       <div className="relative aspect-video w-full bg-muted overflow-hidden">
         <Image
           src={imageUrl}
           alt={title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
         {/* Division Badge Overlay */}
         {divisionName && (
-          <div className="absolute top-4 left-4">
-            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-xs font-bold uppercase tracking-wider border-none">
+          <div className="absolute top-3 left-3">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-[10px] font-semibold uppercase tracking-wide border-none font-mono">
               {divisionName}
             </Badge>
           </div>
@@ -79,29 +79,29 @@ export function ProjectCard({
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 flex flex-col p-6 sm:p-8 gap-4">
-        <div className="flex justify-between items-start gap-4">
-          <h3 className="font-bold text-xl sm:text-2xl leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+      <div className="flex-1 flex flex-col p-5 gap-3">
+        <div className="flex justify-between items-start gap-3">
+          <h3 className="font-semibold text-lg leading-tight text-foreground line-clamp-2">
             {title}
           </h3>
 
           {/* Actions: Admin Slot OR Public Links */}
-          <div className="flex gap-2 shrink-0">
+          <div className="flex gap-1.5 shrink-0">
             {actionSlot ? (
               actionSlot
             ) : (
               <>
                 {githubUrl && (
-                  <Button variant="secondary" size="icon" asChild className="h-9 w-9 rounded-full bg-muted hover:bg-foreground hover:text-background transition-colors">
+                  <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-full hover:bg-muted">
                     <Link href={githubUrl} target="_blank" title="View Source">
-                      <Github size={16} />
+                      <Github size={14} />
                     </Link>
                   </Button>
                 )}
                 {demoUrl && (
-                  <Button variant="secondary" size="icon" asChild className="h-9 w-9 rounded-full bg-muted hover:bg-blue-600 hover:text-white transition-colors">
+                  <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-full hover:bg-muted hover:text-blue-600">
                     <Link href={demoUrl} target="_blank" title="Live Demo">
-                      <ExternalLink size={16} />
+                      <ExternalLink size={14} />
                     </Link>
                   </Button>
                 )}
@@ -110,17 +110,17 @@ export function ProjectCard({
           </div>
         </div>
 
-        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
+        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
           {description}
         </p>
 
-        <div className="mt-auto pt-6 flex flex-col gap-4">
+        <div className="mt-auto pt-4 flex flex-col gap-3">
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            {tags.map((t) => (
+          <div className="flex flex-wrap gap-1.5">
+            {tags.slice(0, 4).map((t) => (
               <span
                 key={t}
-                className="px-3 py-1 rounded-full bg-secondary/50 border border-secondary text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+                className="px-2 py-0.5 rounded-full bg-muted text-[10px] font-medium text-muted-foreground font-mono"
               >
                 {t}
               </span>
@@ -128,15 +128,16 @@ export function ProjectCard({
           </div>
 
           {/* Date Footer */}
-          <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground pt-4 border-t border-dashed border-border">
-            <Calendar size={12} />
-            <span>Added on {new Date(createdAt).toLocaleDateString()}</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground pt-3 border-t border-border font-mono">
+            <Calendar size={11} />
+            <span>{new Date(createdAt).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 // --- 2. MEMBER CARD ---
 export function MemberCard({
@@ -149,70 +150,65 @@ export function MemberCard({
   actionSlot,
 }: MemberCardProps) {
   return (
-    <div className="group relative flex flex-col items-center bg-card border border-border rounded-4xl p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 h-full">
-      
-      {/* Division Badge */}
-      {divisionName && (
-        <div className="absolute top-4 right-4">
-           <Badge variant="outline" className="text-[10px] uppercase font-bold text-muted-foreground border-border/50">
-              {divisionName}
-           </Badge>
-        </div>
-      )}
+    <div className="group relative flex flex-col items-center bg-card border border-border rounded-2xl p-5 pt-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 h-full">
 
-      {/* Avatar with Ring */}
-      <div className="relative mb-6">
-        <div className="relative h-32 w-32 rounded-xl overflow-hidden shadow-lg group-hover:scale-105 transition-transform duration-500">
+      {/* Avatar */}
+      <div className="relative mb-3">
+        <div className="relative h-16 w-16 rounded-full overflow-hidden border-2 border-border shadow-sm group-hover:scale-105 transition-transform duration-300">
           <Image src={imageUrl} alt={name} fill className="object-cover" />
         </div>
-        <div className="absolute inset-0 rounded-full bg-primary/10 blur-2xl -z-10 scale-0 group-hover:scale-150 transition-transform duration-500" />
       </div>
 
       {/* Name & Role */}
-      <div className="text-center space-y-2 mb-6 flex-1">
-        <h3 className="text-xl font-bold text-foreground leading-tight">{name}</h3>
-        <div className="inline-block px-3 py-1 rounded-full bg-secondary/50 border border-secondary text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-          {role}
-        </div>
+      <div className="text-center space-y-0.5 mb-2 flex-1">
+        <h3 className="text-sm font-semibold text-foreground leading-tight truncate max-w-full">{name}</h3>
+        <p className="text-xs text-muted-foreground truncate max-w-full">{role}</p>
       </div>
+      
+      {/* Division Badge - Below name */}
+      {divisionName && (
+        <Badge variant="outline" className="text-[9px] uppercase font-medium text-muted-foreground border-border/50 px-2 py-0.5 mb-3 font-mono">
+          {divisionName}
+        </Badge>
+      )}
 
       {/* Footer: Admin Actions OR Social Links */}
-      <div className="flex items-center gap-3 w-full justify-center pt-6 border-t border-dashed border-border">
+      <div className="flex items-center gap-2 w-full justify-center pt-4 border-t border-border">
         {actionSlot ? (
           actionSlot
         ) : (
           <>
             {github ? (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
                 asChild
-                className="rounded-full h-10 w-10 hover:bg-foreground hover:text-background dark:hover:bg-transparent dark:hover:text-foreground dark:hover:border-foreground transition-colors"
+                className="rounded-full h-8 w-8 hover:bg-muted"
               >
                 <Link href={github} target="_blank" aria-label={`${name}'s GitHub`}>
-                  <Github size={18} />
+                  <Github size={14} />
                 </Link>
               </Button>
             ) : (
-              <Button variant="outline" size="icon" disabled className="rounded-full h-10 w-10 opacity-20">
-                <Github size={18} />
+              <Button variant="ghost" size="icon" disabled className="rounded-full h-8 w-8 opacity-30">
+                <Github size={14} />
               </Button>
             )}
 
             {linkedin ? (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="icon"
                 asChild
-                className="rounded-full h-10 w-10 hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5] dark:hover:bg-transparent dark:hover:text-[#0077b5] dark:hover:border-[#0077b5] transition-colors"
+                className="rounded-full h-8 w-8 hover:bg-muted hover:text-[#0077b5]"
               >
                 <Link href={linkedin} target="_blank" aria-label={`${name}'s LinkedIn`}>
-                  <Linkedin size={18} />
+                  <Linkedin size={14} />
                 </Link>
               </Button>
             ) : (
-              <Button variant="outline" size="icon" disabled className="rounded-full h-10 w-10 opacity-20">
-                <Linkedin size={18} />
+              <Button variant="ghost" size="icon" disabled className="rounded-full h-8 w-8 opacity-30">
+                <Linkedin size={14} />
               </Button>
             )}
           </>
@@ -230,26 +226,26 @@ export function AchievementCard({
   date,
   issuer,
   winner,
+  linkUrl,
   colorClass = "bg-blue-600",
   divisionName,
   actionSlot,
 }: AchievementCardProps) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-4xl bg-card border border-border hover:border-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-card border border-border hover:border-primary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 h-full">
       {/* Image Section */}
       <div className="relative aspect-4/3 w-full bg-muted overflow-hidden">
         <Image
           src={imageUrl}
           alt={title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-700"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className={cn("absolute inset-0 opacity-10 mix-blend-multiply group-hover:opacity-0 transition-opacity", colorClass)} />
         
         {/* Division Badge */}
         {divisionName && (
-          <div className="absolute top-4 right-4">
-             <Badge className="bg-black/80 hover:bg-black text-white border-none text-[10px] uppercase font-bold tracking-widest backdrop-blur-md">
+          <div className="absolute top-3 right-3">
+             <Badge className="bg-black/70 text-white border-none text-[9px] uppercase font-semibold tracking-wide backdrop-blur-sm font-mono">
                 {divisionName}
              </Badge>
           </div>
@@ -257,40 +253,52 @@ export function AchievementCard({
       </div>
 
       {/* Content Section */}
-      <div className="flex-1 p-6 flex flex-col">
+      <div className="flex-1 p-5 flex flex-col">
         {/* Metadata Header */}
-        <div className="flex items-center gap-3 mb-4">
-          <span className={cn(
-            "px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm", 
-            "text-black dark:text-white border border-border bg-secondary/50"
-          )}>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold uppercase tracking-wide text-muted-foreground bg-muted font-mono">
             {issuer}
           </span>
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
-            <Calendar size={12} />
+          <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
+            <Calendar size={10} />
             <span>{date}</span>
           </div>
         </div>
 
-        {/* Title & Desc */}
-        <h3 className="text-xl font-black uppercase tracking-tight mb-3 leading-tight line-clamp-2">
-          {title}
-        </h3>
-        <div className="flex justify-between items-start gap-2 mb-6">
-           <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 flex-1">
-             {description}
-           </p>
-           {actionSlot && <div className="shrink-0">{actionSlot}</div>}
+        {/* Title & Actions */}
+        <div className="flex justify-between items-start gap-3 mb-2">
+          <h3 className="text-base font-semibold leading-tight line-clamp-2">
+            {title}
+          </h3>
+          
+          {/* Actions: Admin Slot OR Link Button */}
+          <div className="flex gap-1.5 shrink-0">
+            {actionSlot ? (
+              actionSlot
+            ) : (
+              linkUrl && (
+                <Button variant="ghost" size="icon" asChild className="h-8 w-8 rounded-full hover:bg-muted hover:text-blue-600">
+                  <Link href={linkUrl} target="_blank" title="View Details">
+                    <ExternalLink size={14} />
+                  </Link>
+                </Button>
+              )
+            )}
+          </div>
         </div>
+        
+        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2 mb-4">
+          {description}
+        </p>
 
         {/* Winner Footer */}
-        <div className="mt-auto flex items-center gap-3 pt-4 border-t border-dashed border-border">
-          <div className="p-2 rounded-full bg-background border shadow-sm">
-            <Award size={16} />
+        <div className="mt-auto flex items-center gap-2.5 pt-3 border-t border-border">
+          <div className="p-1.5 rounded-full bg-muted">
+            <Award size={12} />
           </div>
           <div className="min-w-0">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold mb-0.5">Winner</p>
-            <p className="font-bold text-foreground text-sm truncate">{winner}</p>
+            <p className="text-[9px] text-muted-foreground uppercase tracking-wide font-medium font-mono">Winner</p>
+            <p className="font-medium text-foreground text-sm truncate">{winner}</p>
           </div>
         </div>
       </div>

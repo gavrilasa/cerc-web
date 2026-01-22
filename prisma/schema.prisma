@@ -77,6 +77,7 @@ model Division {
   description  String
   iconName     String        @default("FolderKanban")
   colorClass   String        @default("text-slate-900")
+  order        Int           @default(0)
   
   projects     Project[]
   members      Member[]
@@ -95,6 +96,7 @@ model Project {
   tags         String[]
   demoUrl      String?
   githubUrl    String?
+  order        Int      @default(0)
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -110,6 +112,7 @@ model Member {
   imageUrl     String
   github       String?
   linkedin     String?
+  order        Int      @default(0)
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -126,6 +129,8 @@ model Achievement {
   winner       String
   description  String
   imageUrl     String
+  linkUrl      String?  // Optional external link
+  order        Int      @default(0)
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -139,6 +144,7 @@ model TechStack {
   name         String
   imageUrl     String   
   websiteUrl   String?
+  order        Int      @default(0)
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

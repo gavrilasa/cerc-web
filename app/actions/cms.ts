@@ -79,6 +79,20 @@ export async function deleteDivision(id: string) {
   revalidatePath("/admin/divisions");
 }
 
+export async function reorderDivisions(orderData: { id: string; order: number }[]) {
+  // Update each division's order in a transaction
+  await prisma.$transaction(
+    orderData.map(({ id, order }) =>
+      prisma.division.update({
+        where: { id },
+        data: { order },
+      })
+    )
+  );
+  revalidatePath("/admin/divisions");
+  revalidatePath("/");
+}
+
 // --- PROJECTS ---
 export async function createProject(formData: FormData) {
   const divisionId = formData.get("divisionId") as string;
@@ -120,6 +134,16 @@ export async function deleteProject(id: string) {
   revalidatePath("/admin/projects");
 }
 
+export async function reorderProjects(orderData: { id: string; order: number }[]) {
+  await prisma.$transaction(
+    orderData.map(({ id, order }) =>
+      prisma.project.update({ where: { id }, data: { order } })
+    )
+  );
+  revalidatePath("/admin/projects");
+  revalidatePath("/projects");
+}
+
 // --- MEMBERS ---
 export async function createMember(formData: FormData) {
   const divisionId = formData.get("divisionId") as string;
@@ -159,6 +183,16 @@ export async function deleteMember(id: string) {
   revalidatePath("/admin/members");
 }
 
+export async function reorderMembers(orderData: { id: string; order: number }[]) {
+  await prisma.$transaction(
+    orderData.map(({ id, order }) =>
+      prisma.member.update({ where: { id }, data: { order } })
+    )
+  );
+  revalidatePath("/admin/members");
+  revalidatePath("/members");
+}
+
 // --- ACHIEVEMENTS ---
 export async function createAchievement(formData: FormData) {
   const divisionId = formData.get("divisionId") as string;
@@ -171,6 +205,7 @@ export async function createAchievement(formData: FormData) {
       issuer: formData.get("issuer") as string,
       winner: formData.get("winner") as string,
       imageUrl: formData.get("imageUrl") as string,
+      linkUrl: (formData.get("linkUrl") as string) || null,
       divisionId,
     },
   });
@@ -189,6 +224,7 @@ export async function updateAchievement(formData: FormData) {
       issuer: formData.get("issuer") as string,
       winner: formData.get("winner") as string,
       imageUrl: formData.get("imageUrl") as string,
+      linkUrl: (formData.get("linkUrl") as string) || null,
       divisionId: formData.get("divisionId") as string,
     },
   });
@@ -198,6 +234,16 @@ export async function updateAchievement(formData: FormData) {
 export async function deleteAchievement(id: string) {
   await prisma.achievement.delete({ where: { id } });
   revalidatePath("/admin/achievements");
+}
+
+export async function reorderAchievements(orderData: { id: string; order: number }[]) {
+  await prisma.$transaction(
+    orderData.map(({ id, order }) =>
+      prisma.achievement.update({ where: { id }, data: { order } })
+    )
+  );
+  revalidatePath("/admin/achievements");
+  revalidatePath("/achievements");
 }
 
 // --- TECH STACK ---
@@ -218,4 +264,30 @@ export async function createTechStack(formData: FormData) {
 export async function deleteTechStack(id: string) {
   await prisma.techStack.delete({ where: { id } });
   revalidatePath("/admin/tech-stack");
+}
+
+export async function updateTechStack(formData: FormData) {
+  const id = formData.get("id") as string;
+
+  await prisma.techStack.update({
+    where: { id },
+    data: {
+      name: formData.get("name") as string,
+      imageUrl: formData.get("imageUrl") as string,
+      websiteUrl: (formData.get("websiteUrl") as string) || null,
+      divisionId: formData.get("divisionId") as string,
+    },
+  });
+  revalidatePath("/admin/tech-stack");
+  revalidatePath("/tech-stack");
+}
+
+export async function reorderTechStack(orderData: { id: string; order: number }[]) {
+  await prisma.$transaction(
+    orderData.map(({ id, order }) =>
+      prisma.techStack.update({ where: { id }, data: { order } })
+    )
+  );
+  revalidatePath("/admin/tech-stack");
+  revalidatePath("/tech-stack");
 }

@@ -1,10 +1,15 @@
 "use server";
 
 import { redirect } from "next/navigation";
-// Import fungsi signOut dari library auth Anda (NextAuth/BetterAuth/Lucia) jika ada
-// import { signOut } from "@/auth"; 
+import { cookies } from "next/headers";
 
 export async function handleSignOut() {
-  // await signOut(); // Uncomment baris ini jika menggunakan library auth
-  redirect("/"); // Redirect ke halaman utama setelah logout
+  // Clear the session cookie
+  const cookieStore = await cookies();
+  
+  // Delete the better-auth session cookie
+  cookieStore.delete("better-auth.session_token");
+  
+  // Redirect to login page
+  redirect("/login");
 }

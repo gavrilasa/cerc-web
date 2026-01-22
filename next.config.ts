@@ -18,6 +18,16 @@ const nextConfig: NextConfig = {
 				hostname: "res.cloudinary.com",
 				port: "",
 			},
+			{
+				protocol: "https",
+				hostname: "**.cloudinary.com",
+				port: "",
+			},
+			{
+				protocol: "https",
+				hostname: "upload.wikimedia.org",
+				port: "",
+			},
 		],
 	},
 	experimental: {

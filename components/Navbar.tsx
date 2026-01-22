@@ -19,6 +19,7 @@ export function Navbar() {
 		{ label: "Home", ariaLabel: "Home", link: "/" },
 		{ label: "Divisions", ariaLabel: "Divisions", link: "/divisions" },
 		{ label: "Projects", ariaLabel: "Projects", link: "/projects" },
+		{ label: "Members", ariaLabel: "Members", link: "/members" },
 		{ label: "Tech Stack", ariaLabel: "Tech Stack", link: "/tech-stack" },
 		{ label: "Achievements", ariaLabel: "Achievements", link: "/achievements" },
 	];
@@ -37,7 +38,7 @@ export function Navbar() {
 		<>
 			<header
 				className={cn(
-					"sticky top-0 z-50 mx-auto w-full container border-b border-transparent md:rounded-2xl md:border md:transition-all md:ease-out py-2 px-4",
+					"sticky top-0 z-50 mx-auto w-full container border-b border-transparent md:rounded-2xl md:border md:transition-all md:ease-out px-4 py-2",
 					{
 						"bg-background/80 supports-backdrop-filter:bg-background/50 border-border backdrop-blur-lg md:top-4 md:max-w-6xl md:shadow-sm":
 							scrolled,

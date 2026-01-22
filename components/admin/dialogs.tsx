@@ -60,10 +60,10 @@ export function TechStackDialog({ divisions, data }: { divisions: any[], data?: 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm"><Plus className="mr-2 h-4 w-4" /> Add Tech</Button>
+        {data ? <Button variant="ghost" size="icon" className="h-7 w-7"><Edit size={12} /></Button> : <Button size="sm"><Plus className="mr-2 h-4 w-4" /> Add Tech</Button>}
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader><DialogTitle>Add Technology</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>{data ? "Edit" : "Add"} Technology</DialogTitle></DialogHeader>
         <TechStackForm divisions={divisions} data={data} closeDialog={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
