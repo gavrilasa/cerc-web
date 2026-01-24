@@ -60,16 +60,42 @@ const DIVISION_ICONS: { name: string; icon: LucideIcon; label: string }[] = [
   { name: "Video", icon: Video, label: "Video" },
   { name: "Zap", icon: Zap, label: "Power" },
   { name: "Brain", icon: Brain, label: "AI" },
+  { name: "Video", icon: Video, label: "Video" },
+  { name: "Zap", icon: Zap, label: "Power" },
+  { name: "Brain", icon: Brain, label: "AI" },
   { name: "Bot", icon: Bot, label: "Robotics" },
 ];
 
+interface FormDataLike {
+  id?: string;
+  title?: string;
+  slug?: string;
+  iconName?: string;
+  description?: string;
+  divisionId?: string;
+  imageUrl?: string;
+  tags?: string[];
+  githubUrl?: string;
+  demoUrl?: string;
+  name?: string;
+  role?: string;
+  github?: string;
+  linkedin?: string;
+  date?: string;
+  issuer?: string;
+  winner?: string;
+  linkUrl?: string;
+  websiteUrl?: string;
+  [key: string]: unknown;
+}
+
 // --- DIVISION FORM ---
-export function DivisionForm({ onSuccess, data }: { onSuccess?: () => void, data?: any }) {
+export function DivisionForm({ onSuccess, data }: { onSuccess?: () => void, data?: unknown }) {
   const isEditing = !!data;
 
   async function handleSubmit(formData: FormData) {
     if (isEditing) {
-        formData.append("id", data.id);
+        formData.append("id", (data as FormDataLike).id || "");
         await updateDivision(formData);
         toast.success("Division updated");
     } else {
@@ -84,17 +110,17 @@ export function DivisionForm({ onSuccess, data }: { onSuccess?: () => void, data
         <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
                 <OptionalLabel>Title</OptionalLabel>
-                <Input name="title" placeholder="e.g. Software Engineering" defaultValue={data?.title} required />
+                <Input name="title" placeholder="e.g. Software Engineering" defaultValue={(data as FormDataLike)?.title} required />
             </div>
             <div className="space-y-2">
                 <OptionalLabel>Slug</OptionalLabel>
-                <Input name="slug" placeholder="e.g. software" defaultValue={data?.slug} required />
+                <Input name="slug" placeholder="e.g. software" defaultValue={(data as FormDataLike)?.slug} required />
             </div>
         </div>
         
         <div className="space-y-2">
             <OptionalLabel>Icon</OptionalLabel>
-            <Select name="iconName" defaultValue={data?.iconName || "FolderKanban"}>
+            <Select name="iconName" defaultValue={(data as FormDataLike)?.iconName || "FolderKanban"}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select an icon" />
                 </SelectTrigger>
@@ -116,7 +142,7 @@ export function DivisionForm({ onSuccess, data }: { onSuccess?: () => void, data
 
         <div className="space-y-2">
             <OptionalLabel>Description</OptionalLabel>
-            <Textarea name="description" placeholder="Brief description of the division..." defaultValue={data?.description} required />
+            <Textarea name="description" placeholder="Brief description of the division..." defaultValue={(data as FormDataLike)?.description} required />
         </div>
 
         <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Create Division"}</Button>
@@ -125,8 +151,8 @@ export function DivisionForm({ onSuccess, data }: { onSuccess?: () => void, data
 }
 
 // --- PROJECT FORM ---
-export function ProjectForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
-  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+export function ProjectForm({ divisions, closeDialog, data }: { divisions: { id: string; title: string }[], closeDialog: () => void, data?: unknown }) {
+  const [imageUrl, setImageUrl] = useState((data as FormDataLike)?.imageUrl || "");
   const isEditing = !!data;
 
   async function handleSubmit(formData: FormData) {
@@ -134,7 +160,7 @@ export function ProjectForm({ divisions, closeDialog, data }: { divisions: any[]
     formData.append("imageUrl", imageUrl);
     
     if (isEditing) {
-        formData.append("id", data.id);
+        formData.append("id", (data as FormDataLike).id || "");
         await updateProject(formData);
         toast.success("Project updated");
     } else {
@@ -148,10 +174,10 @@ export function ProjectForm({ divisions, closeDialog, data }: { divisions: any[]
     <form action={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <OptionalLabel>Division</OptionalLabel>
-        <Select name="divisionId" defaultValue={data?.divisionId} required>
+        <Select name="divisionId" defaultValue={(data as FormDataLike)?.divisionId} required>
             <SelectTrigger><SelectValue placeholder="Select a division" /></SelectTrigger>
             <SelectContent>
-                {divisions.map((d: any) => (
+                {divisions.map((d: { id: string; title: string }) => (
                     <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
                 ))}
             </SelectContent>
@@ -166,28 +192,28 @@ export function ProjectForm({ divisions, closeDialog, data }: { divisions: any[]
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
             <OptionalLabel>Title</OptionalLabel>
-            <Input name="title" placeholder="e.g. Smart Home App" defaultValue={data?.title} required />
+            <Input name="title" placeholder="e.g. Smart Home App" defaultValue={(data as FormDataLike)?.title} required />
         </div>
         <div className="space-y-2">
             <OptionalLabel>Tags</OptionalLabel>
-            <Input name="tags" defaultValue={data?.tags?.join(", ")} placeholder="e.g. React, Node.js, AI" required />
+            <Input name="tags" defaultValue={(data as FormDataLike)?.tags?.join(", ")} placeholder="e.g. React, Node.js, AI" required />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
             <OptionalLabel optional>GitHub URL</OptionalLabel>
-            <Input name="githubUrl" defaultValue={data?.githubUrl} placeholder="https://github.com/..." />
+            <Input name="githubUrl" defaultValue={(data as FormDataLike)?.githubUrl} placeholder="https://github.com/..." />
         </div>
         <div className="space-y-2">
             <OptionalLabel optional>Demo URL</OptionalLabel>
-            <Input name="demoUrl" defaultValue={data?.demoUrl} placeholder="https://demo.example.com" />
+            <Input name="demoUrl" defaultValue={(data as FormDataLike)?.demoUrl} placeholder="https://demo.example.com" />
         </div>
       </div>
 
       <div className="space-y-2">
         <OptionalLabel>Description</OptionalLabel>
-        <Textarea name="description" placeholder="Describe the project, its features, and technologies used..." defaultValue={data?.description} required />
+        <Textarea name="description" placeholder="Describe the project, its features, and technologies used..." defaultValue={(data as FormDataLike)?.description} required />
       </div>
 
       <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Create Project"}</Button>
@@ -196,8 +222,8 @@ export function ProjectForm({ divisions, closeDialog, data }: { divisions: any[]
 }
 
 // --- MEMBER FORM ---
-export function MemberForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
-  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+export function MemberForm({ divisions, closeDialog, data }: { divisions: { id: string; title: string }[], closeDialog: () => void, data?: unknown }) {
+  const [imageUrl, setImageUrl] = useState((data as FormDataLike)?.imageUrl || "");
   const isEditing = !!data;
   
   async function handleSubmit(formData: FormData) {
@@ -205,7 +231,7 @@ export function MemberForm({ divisions, closeDialog, data }: { divisions: any[],
     formData.append("imageUrl", imageUrl);
 
     if (isEditing) {
-        formData.append("id", data.id);
+        formData.append("id", (data as FormDataLike).id || "");
         await updateMember(formData);
         toast.success("Member updated");
     } else {
@@ -225,10 +251,10 @@ export function MemberForm({ divisions, closeDialog, data }: { divisions: any[],
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <OptionalLabel>Division</OptionalLabel>
-          <Select name="divisionId" defaultValue={data?.divisionId} required>
+          <Select name="divisionId" defaultValue={(data as FormDataLike)?.divisionId} required>
               <SelectTrigger><SelectValue placeholder="Select a division" /></SelectTrigger>
               <SelectContent>
-                  {divisions.map((d: any) => (
+                  {divisions.map((d: { id: string; title: string }) => (
                       <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
                   ))}
               </SelectContent>
@@ -236,23 +262,23 @@ export function MemberForm({ divisions, closeDialog, data }: { divisions: any[],
         </div>
         <div className="space-y-2">
            <OptionalLabel>Full Name</OptionalLabel>
-           <Input name="name" placeholder="e.g. John Doe" defaultValue={data?.name} required />
+           <Input name="name" placeholder="e.g. John Doe" defaultValue={(data as FormDataLike)?.name} required />
         </div>
       </div>
 
       <div className="space-y-2">
           <OptionalLabel>Role</OptionalLabel>
-          <Input name="role" defaultValue={data?.role} placeholder="e.g. Head of Division, Member" required />
+          <Input name="role" defaultValue={(data as FormDataLike)?.role} placeholder="e.g. Head of Division, Member" required />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <OptionalLabel optional>GitHub Username</OptionalLabel>
-            <Input name="github" defaultValue={data?.github} placeholder="https://github.com/username" />
+            <Input name="github" defaultValue={(data as FormDataLike)?.github} placeholder="https://github.com/username" />
           </div>
           <div className="space-y-2">
             <OptionalLabel optional>LinkedIn Profile</OptionalLabel>
-            <Input name="linkedin" defaultValue={data?.linkedin} placeholder="https://linkedin.com/in/..." />
+            <Input name="linkedin" defaultValue={(data as FormDataLike)?.linkedin} placeholder="https://linkedin.com/in/..." />
           </div>
       </div>
 
@@ -262,8 +288,8 @@ export function MemberForm({ divisions, closeDialog, data }: { divisions: any[],
 }
 
 // --- ACHIEVEMENT FORM ---
-export function AchievementForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
-  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+export function AchievementForm({ divisions, closeDialog, data }: { divisions: { id: string; title: string }[], closeDialog: () => void, data?: unknown }) {
+  const [imageUrl, setImageUrl] = useState((data as FormDataLike)?.imageUrl || "");
   const isEditing = !!data;
   
   async function handleSubmit(formData: FormData) {
@@ -271,7 +297,7 @@ export function AchievementForm({ divisions, closeDialog, data }: { divisions: a
     formData.append("imageUrl", imageUrl);
 
     if (isEditing) {
-        formData.append("id", data.id);
+        formData.append("id", (data as FormDataLike).id || "");
         await updateAchievement(formData);
         toast.success("Achievement updated");
     } else {
@@ -286,10 +312,10 @@ export function AchievementForm({ divisions, closeDialog, data }: { divisions: a
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <OptionalLabel>Division</OptionalLabel>
-          <Select name="divisionId" defaultValue={data?.divisionId} required>
+          <Select name="divisionId" defaultValue={(data as FormDataLike)?.divisionId} required>
               <SelectTrigger><SelectValue placeholder="Select a division" /></SelectTrigger>
               <SelectContent>
-                  {divisions.map((d: any) => (
+                  {divisions.map((d: { id: string; title: string }) => (
                       <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
                   ))}
               </SelectContent>
@@ -297,7 +323,7 @@ export function AchievementForm({ divisions, closeDialog, data }: { divisions: a
         </div>
         <div className="space-y-2">
           <OptionalLabel>Date</OptionalLabel>
-          <Input name="date" defaultValue={data?.date} placeholder="e.g. Nov 2024" required />
+          <Input name="date" defaultValue={(data as FormDataLike)?.date} placeholder="e.g. Nov 2024" required />
         </div>
       </div>
 
@@ -308,28 +334,28 @@ export function AchievementForm({ divisions, closeDialog, data }: { divisions: a
 
       <div className="space-y-2">
         <OptionalLabel>Title</OptionalLabel>
-        <Input name="title" placeholder="e.g. 1st Place at Hackathon XYZ" defaultValue={data?.title} required />
+        <Input name="title" placeholder="e.g. 1st Place at Hackathon XYZ" defaultValue={(data as FormDataLike)?.title} required />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
          <div className="space-y-2">
             <OptionalLabel>Issuer / Competition</OptionalLabel>
-            <Input name="issuer" defaultValue={data?.issuer} placeholder="e.g. Google, IEEE" required />
+            <Input name="issuer" defaultValue={(data as FormDataLike)?.issuer} placeholder="e.g. Google, IEEE" required />
          </div>
          <div className="space-y-2">
             <OptionalLabel>Winner (Team/Person)</OptionalLabel>
-            <Input name="winner" defaultValue={data?.winner} placeholder="e.g. Team Alpha, John Doe" required />
+            <Input name="winner" defaultValue={(data as FormDataLike)?.winner} placeholder="e.g. Team Alpha, John Doe" required />
          </div>
       </div>
 
       <div className="space-y-2">
         <OptionalLabel>Description</OptionalLabel>
-        <Textarea name="description" placeholder="Describe the achievement, what was built, the competition..." defaultValue={data?.description} required />
+        <Textarea name="description" placeholder="Describe the achievement, what was built, the competition..." defaultValue={(data as FormDataLike)?.description} required />
       </div>
       
       <div className="space-y-2">
         <OptionalLabel optional>Link URL</OptionalLabel>
-        <Input name="linkUrl" defaultValue={data?.linkUrl} placeholder="https://certificate.example.com" />
+        <Input name="linkUrl" defaultValue={(data as FormDataLike)?.linkUrl} placeholder="https://certificate.example.com" />
       </div>
 
       <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Add Achievement"}</Button>
@@ -338,8 +364,8 @@ export function AchievementForm({ divisions, closeDialog, data }: { divisions: a
 }
 
 // --- TECH STACK FORM ---
-export function TechStackForm({ divisions, closeDialog, data }: { divisions: any[], closeDialog: () => void, data?: any }) {
-  const [imageUrl, setImageUrl] = useState(data?.imageUrl || "");
+export function TechStackForm({ divisions, closeDialog, data }: { divisions: { id: string; title: string }[], closeDialog: () => void, data?: unknown }) {
+  const [imageUrl, setImageUrl] = useState((data as FormDataLike)?.imageUrl || "");
   const isEditing = !!data;
 
   async function handleSubmit(formData: FormData) {
@@ -347,7 +373,7 @@ export function TechStackForm({ divisions, closeDialog, data }: { divisions: any
     formData.append("imageUrl", imageUrl);
     
     if (isEditing) {
-      formData.append("id", data.id);
+      formData.append("id", (data as FormDataLike).id || "");
       await updateTechStack(formData);
       toast.success("Tech updated");
     } else {
@@ -361,10 +387,10 @@ export function TechStackForm({ divisions, closeDialog, data }: { divisions: any
     <form action={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <OptionalLabel>Division</OptionalLabel>
-        <Select name="divisionId" defaultValue={data?.divisionId} required>
+        <Select name="divisionId" defaultValue={(data as FormDataLike)?.divisionId} required>
             <SelectTrigger><SelectValue placeholder="Select a division" /></SelectTrigger>
             <SelectContent>
-                {divisions.map((d: any) => (
+                {divisions.map((d: { id: string; title: string }) => (
                     <SelectItem key={d.id} value={d.id}>{d.title}</SelectItem>
                 ))}
             </SelectContent>
@@ -378,12 +404,12 @@ export function TechStackForm({ divisions, closeDialog, data }: { divisions: any
       
       <div className="space-y-2">
          <OptionalLabel>Technology Name</OptionalLabel>
-         <Input name="name" defaultValue={data?.name} placeholder="e.g. React, Python, Docker" required />
+         <Input name="name" defaultValue={(data as FormDataLike)?.name} placeholder="e.g. React, Python, Docker" required />
       </div>
       
       <div className="space-y-2">
          <OptionalLabel optional>Website URL</OptionalLabel>
-         <Input name="websiteUrl" defaultValue={data?.websiteUrl} placeholder="https://reactjs.org" />
+         <Input name="websiteUrl" defaultValue={(data as FormDataLike)?.websiteUrl} placeholder="https://reactjs.org" />
       </div>
 
       <Button type="submit" className="w-full">{isEditing ? "Save Changes" : "Add Technology"}</Button>

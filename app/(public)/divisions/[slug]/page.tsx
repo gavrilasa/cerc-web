@@ -11,7 +11,7 @@ import { ProjectCard, MemberCard, AchievementCard } from "@/components/divisions
 
 export const dynamic = "force-dynamic";
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ElementType> = {
   AppWindow, Network, Cpu, Clapperboard, FolderKanban
 };
 

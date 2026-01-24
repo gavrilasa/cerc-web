@@ -1,9 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Github, Linkedin, ExternalLink, Calendar, Award, Layers, User } from "lucide-react";
+import { Github, Linkedin, ExternalLink, Calendar, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 // --- Types ---
@@ -227,7 +226,6 @@ export function AchievementCard({
   issuer,
   winner,
   linkUrl,
-  colorClass = "bg-blue-600",
   divisionName,
   actionSlot,
 }: AchievementCardProps) {

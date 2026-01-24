@@ -57,7 +57,6 @@ export const StaggeredMenu = forwardRef<
       items = [],
       socialItems = [],
       displaySocials = true,
-      displayItemNumbering = true,
       className,
       logoUrl = "/src/assets/logos/reactbits-gh-white.svg",
       menuButtonColor = "#fff",

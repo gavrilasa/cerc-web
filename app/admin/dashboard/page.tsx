@@ -17,7 +17,7 @@ export default async function DashboardOverview() {
         <div className="space-y-2">
             <h2 className="text-2xl font-bold">Welcome to CERC Admin</h2>
             <p className="text-muted-foreground max-w-md">
-                Your database appears to be empty. Let's set up the core divisions (Software, Network, Embedded, Multimedia) to get started.
+                Your database appears to be empty. Let&apos;s set up the core divisions (Software, Network, Embedded, Multimedia) to get started.
             </p>
         </div>
         <form action={initializeSystem}>
@@ -48,7 +48,7 @@ export default async function DashboardOverview() {
   );
 }
 
-function StatsCard({ title, value, icon: Icon }: { title: string, value: number, icon: any }) {
+function StatsCard({ title, value, icon: Icon }: { title: string, value: number, icon: React.ElementType }) {
   return (
     <Card className="px-4 py-8">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
