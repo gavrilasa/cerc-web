@@ -3,9 +3,11 @@ import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useScroll } from "@/components/ui/use-scroll";
-import { Command, Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import StaggeredMenu, { StaggeredMenuHandle } from "./StaggeredMenu";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import Image from "next/image";
 
 export function Navbar() {
 	const scrolled = useScroll(10);
@@ -14,14 +16,18 @@ export function Navbar() {
 	const { setTheme, theme } = useTheme();
 
 	const menuItems = [
-		{ label: "Features", ariaLabel: "Features", link: "#" },
-		{ label: "Pricing", ariaLabel: "Pricing", link: "#" },
-		{ label: "About", ariaLabel: "About", link: "#" },
+		{ label: "Home", ariaLabel: "Home", link: "/" },
+		{ label: "Divisions", ariaLabel: "Divisions", link: "/divisions" },
+		{ label: "Projects", ariaLabel: "Projects", link: "/projects" },
+		{ label: "Members", ariaLabel: "Members", link: "/members" },
+		{ label: "Tech Stack", ariaLabel: "Tech Stack", link: "/tech-stack" },
+		{ label: "Achievements", ariaLabel: "Achievements", link: "/achievements" },
 	];
 
 	const socialItems = [
-		{ label: "Twitter", link: "https://twitter.com" },
-		{ label: "GitHub", link: "https://github.com" },
+		{ label: "Instagram", link: "https://instagram.com/cerc_undip" },
+		{ label: "LinkedIn", link: "https://linkedin.com/company/cerc-undip" },
+		{ label: "GitHub", link: "https://github.com/cerc-undip" },
 	];
 
 	const handleToggle = () => {
@@ -32,9 +38,9 @@ export function Navbar() {
 		<>
 			<header
 				className={cn(
-					"sticky top-0 z-1 mx-auto w-full container border-b border-transparent md:rounded-2xl md:border md:transition-all md:ease-out py-2 px-4",
+					"sticky top-0 z-50 mx-auto w-full container border-b border-transparent md:rounded-2xl md:border md:transition-all md:ease-out px-4 py-2",
 					{
-						"bg-background/95 supports-backdrop-filter:bg-background/50 border-border backdrop-blur-lg md:top-4 md:max-w-6xl md:shadow":
+						"bg-background/80 supports-backdrop-filter:bg-background/50 border-border backdrop-blur-lg md:top-4 md:max-w-6xl md:shadow-sm":
 							scrolled,
 						"border-transparent": isOpen,
 					}
@@ -48,9 +54,16 @@ export function Navbar() {
 						}
 					)}
 				>
-					<div className="flex items-center gap-2">
-						<Command className="h-6 w-6" />
-					</div>
+					<Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+						<Image 
+							src="https://res.cloudinary.com/dah2v3xbg/image/upload/v1764013541/Logo-CERC-presspadding_r027nm.png"
+							alt="CERC Logo"
+							width={32}
+							height={32}
+							className="object-contain"
+						/>
+						<span className="font-bold tracking-tight hidden sm:block">CERC</span>
+					</Link>
 
 					<div className="flex items-center gap-2">
 						<Button
@@ -68,7 +81,7 @@ export function Navbar() {
 							variant="ghost"
 							size="icon"
 							onClick={handleToggle}
-							className="relative h-10 w-10 overflow-hidden"
+							className="relative h-10 w-10 overflow-hidden z-50"
 						>
 							<Menu
 								className={cn(
@@ -101,10 +114,11 @@ export function Navbar() {
 				isFixed={true}
 				displaySocials={true}
 				displayItemNumbering={true}
-				colors={["#1A6BFF", "#0047FF"]}
-				accentColor="#0055FF"
+				colors={["#2563eb", "#1d4ed8", "#1e40af"]}
+				accentColor="#3b82f6"
 				onMenuOpen={() => setIsOpen(true)}
 				onMenuClose={() => setIsOpen(false)}
+				className="font-mono"
 			/>
 		</>
 	);
