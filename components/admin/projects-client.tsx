@@ -17,6 +17,7 @@ interface Project {
   tags: string[];
   demoUrl: string | null;
   githubUrl: string | null;
+  createdAt: Date;
   order?: number;
   division: { id: string; title: string };
 }

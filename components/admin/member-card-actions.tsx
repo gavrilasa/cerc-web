@@ -13,9 +13,10 @@ import { deleteMember } from "@/app/actions/cms";
 interface MemberCardActionsProps {
   member: any;
   divisionSlug: string;
+  divisions: any[];
 }
 
-export function MemberCardActions({ member, divisionSlug }: MemberCardActionsProps) {
+export function MemberCardActions({ member, divisionSlug, divisions }: MemberCardActionsProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,10 +30,10 @@ export function MemberCardActions({ member, divisionSlug }: MemberCardActionsPro
       <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
         <div className="flex flex-col gap-1 p-1 min-w-[120px]">
            <div className="w-full">
-              <MemberDialog divisionSlug={divisionSlug} data={member} /> 
+              <MemberDialog divisions={divisions} data={member} /> 
            </div>
            
-           <form action={deleteMember.bind(null, member.id, divisionSlug)}>
+           <form action={deleteMember.bind(null, member.id)}>
               <button className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-sm transition-colors">
                 <Trash2 size={14}/> Delete
               </button>
