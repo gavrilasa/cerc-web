@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { AppWindow, Network, Cpu, Clapperboard, FolderKanban, Gamepad2, Database, Globe, Shield, Smartphone, Code, Server, Layers, Palette, Camera, Music, Video, Zap, Brain, Bot, Edit, Trash2, Plus, GripVertical, type LucideIcon } from "lucide-react";
+import { AppWindow, Network, Cpu, Clapperboard, FolderKanban, Gamepad2, Database, Globe, Shield, Smartphone, Code, Server, Layers, Palette, Camera, Music, Video, Zap, Brain, Bot, Edit, Trash2, Plus, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DivisionForm } from "@/components/admin/forms";

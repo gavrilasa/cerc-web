@@ -7,7 +7,7 @@ import { ProjectForm, MemberForm, AchievementForm, TechStackForm } from "./forms
 import { useState } from "react";
 
 // Project Dialog
-export function ProjectDialog({ divisions, data }: { divisions: any[], data?: any }) {
+export function ProjectDialog({ divisions, data }: { divisions: { id: string; title: string }[], data?: unknown }) {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -23,7 +23,7 @@ export function ProjectDialog({ divisions, data }: { divisions: any[], data?: an
 }
 
 // Member Dialog
-export function MemberDialog({ divisions, data }: { divisions: any[], data?: any }) {
+export function MemberDialog({ divisions, data }: { divisions: { id: string; title: string }[], data?: unknown }) {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -39,7 +39,7 @@ export function MemberDialog({ divisions, data }: { divisions: any[], data?: any
 }
 
 // Achievement Dialog
-export function AchievementDialog({ divisions, data }: { divisions: any[], data?: any }) {
+export function AchievementDialog({ divisions, data }: { divisions: { id: string; title: string }[], data?: unknown }) {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -55,7 +55,7 @@ export function AchievementDialog({ divisions, data }: { divisions: any[], data?
 }
 
 // Tech Stack Dialog
-export function TechStackDialog({ divisions, data }: { divisions: any[], data?: any }) {
+export function TechStackDialog({ divisions, data }: { divisions: { id: string; title: string }[], data?: unknown }) {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>

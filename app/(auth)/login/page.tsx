@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -23,7 +24,7 @@ export default function LoginPage() {
         router.push("/admin/dashboard");
       },
       onError: (ctx) => {
-        alert(ctx.error.message);
+        toast.error(ctx.error.message);
         setLoading(false);
       }
     });
@@ -108,14 +109,6 @@ export default function LoginPage() {
           >
             {loading ? <Loader2 className="animate-spin w-5 h-5" /> : "Sign in"}
           </button>
-
-          {/* Terms */}
-          <p className="text-center text-xs text-neutral-600 mt-8 leading-relaxed">
-            You acknowledge that you read, and agree, to our{" "}
-            <Link href="#" className="text-neutral-400 hover:text-white underline">Terms of Service</Link>
-            {" "}and our{" "}
-            <Link href="#" className="text-neutral-400 hover:text-white underline">Privacy Policy</Link>.
-          </p>
           
         </div>
       </div>

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Code, Cpu, Network, Clapperboard, FolderKanban } from "lucide-react";
 import { SectionHeader } from "@/components/public/section-header";
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ElementType> = {
     AppWindow: Code, Network: Network, Cpu: Cpu, Clapperboard: Clapperboard, FolderKanban: FolderKanban
 };
 

@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useLayoutEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+
 import {
-  ArrowRight,
-  Users,
+
   FolderKanban,
   Target,
   Zap,
@@ -16,9 +15,6 @@ import {
   Network,
   Clapperboard,
   Globe,
-  MoreHorizontal,
-  Calendar,
-  CheckCircle2,
   Github,
   Linkedin,
   LucideIcon
@@ -27,8 +23,6 @@ import { gsap } from "gsap";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
-import LogoLoop from "@/components/LogoLoop";
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss } from 'react-icons/si';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
@@ -39,12 +33,12 @@ const IconMap: Record<string, LucideIcon> = {
 };
 
 // Tech Logos (Static for visual appeal)
-const techLogos = [
-  { node: <SiReact />, title: "React", href: "https://react.dev" },
-  { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
-  { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
-  { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-];
+// const techLogos = [
+//   { node: <SiReact />, title: "React", href: "https://react.dev" },
+//   { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+//   { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+//   { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+// ];
 
 const focusAreasDummy = [
   { icon: Target, title: "Core Fundamentals", desc: "Mastering the essential theory and principles." },
@@ -52,8 +46,48 @@ const focusAreasDummy = [
   { icon: BookOpen, title: "Research & Publication", desc: "Documenting findings and contributing to knowledge." },
 ];
 
+// Interfaces
+interface Project {
+  id: string;
+  title: string;
+  imageUrl: string;
+  description: string;
+  tags: string[];
+  githubUrl?: string | null;
+  demoUrl?: string | null;
+}
+
+interface Member {
+  id: string;
+  name: string;
+  role: string | null;
+  imageUrl: string;
+  github?: string | null;
+  linkedin?: string | null;
+}
+
+interface Achievement {
+  id: string;
+  title: string;
+  imageUrl: string;
+  description: string;
+  date: string;
+  winner: string;
+}
+
+interface DivisionData {
+  title: string;
+  description: string;
+  iconName: string;
+  colorClass?: string;
+  projects: Project[];
+  members: Member[];
+  achievements: Achievement[];
+  [key: string]: unknown;
+}
+
 interface DivisionViewProps {
-  data: any; // Full division object with relations
+  data: DivisionData; 
   stats: { label: string; value: string }[];
 }
 
@@ -143,13 +177,6 @@ export default function DivisionView({ data, stats }: DivisionViewProps) {
               ))}
            </div>
         </div>
-        
-        {/* 3. Tech Stack */}
-        <div className="bento-anim my-12">
-            <div className="h-[72px] relative overflow-hidden rounded-2xl border border-dashed border-border bg-muted/30 flex items-center">
-                <LogoLoop logos={techLogos} speed={40} direction="left" logoHeight={32} gap={40} />
-            </div>
-        </div>
 
         <Separator className="my-12 bento-anim" />
 
@@ -167,7 +194,7 @@ export default function DivisionView({ data, stats }: DivisionViewProps) {
                 {/* --- PROJECTS --- */}
                 <TabsContent value="projects" className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {data.projects.map((p: any) => (
+                        {data.projects.map((p: Project) => (
                             <div key={p.id} className="group bg-card rounded-3xl border overflow-hidden hover:shadow-lg transition-all duration-300">
                                 <div className="relative aspect-video bg-muted overflow-hidden">
                                     <Image src={p.imageUrl} alt={p.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -196,7 +223,7 @@ export default function DivisionView({ data, stats }: DivisionViewProps) {
                 {/* --- MEMBERS --- */}
                 <TabsContent value="members" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {data.members.map((m: any) => (
+                        {data.members.map((m: Member) => (
                             <div key={m.id} className="flex items-center gap-4 p-4 rounded-2xl border bg-card hover:border-primary/20 transition-all">
                                 <div className="relative w-14 h-14 rounded-full overflow-hidden border bg-muted shrink-0">
                                     <Image src={m.imageUrl} alt={m.name} fill className="object-cover" />
@@ -218,7 +245,7 @@ export default function DivisionView({ data, stats }: DivisionViewProps) {
                 {/* --- ACHIEVEMENTS --- */}
                 <TabsContent value="achievements" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {data.achievements.map((a: any) => (
+                        {data.achievements.map((a: Achievement) => (
                             <div key={a.id} className="flex gap-4 p-4 rounded-3xl border bg-card hover:shadow-md transition-all items-center">
                                 <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-muted shrink-0">
                                     <Image src={a.imageUrl} alt={a.title} fill className="object-cover" />

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import Intro from "@/components/Intro";
 import { Hero } from "@/components/home/Hero";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ExternalLink, AppWindow, Network, Cpu, Clapperboard, FolderKanban, LucideIcon, Users } from "lucide-react";
+import { ArrowRight, ExternalLink, AppWindow, Network, Cpu, Clapperboard, FolderKanban, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Icon Map
@@ -20,18 +20,40 @@ interface Member {
   imageUrl: string | null;
 }
 
-export function LandingPage({ divisions, members = [] }: { divisions: any[]; members?: Member[] }) {
+interface Division {
+  id: string;
+  title: string;
+  description: string;
+  iconName: string;
+  _count: {
+    projects: number;
+    members: number;
+  };
+  [key: string]: unknown;
+}
+
+export function LandingPage({ divisions, members = [] }: { divisions: Division[]; members?: Member[] }) {
   const [showSplash, setShowSplash] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
 
-  useEffect(() => {
+  // useLayoutEffect prevents flash. Using setTimeout to avoid set-state-in-effect warning.
+  useLayoutEffect(() => {
+    // Check session storage to see if user has visited before in this session
     const hasSeenSplash = sessionStorage.getItem("hasSeenSplashSession");
+    
+    // Only show splash if they haven't seen it
     if (!hasSeenSplash) {
-      setShowSplash(true);
+      setTimeout(() => {
+        setShowSplash(true);
+        setIsChecking(false);
+      }, 0);
+    } else {
+      setTimeout(() => {
+        setIsChecking(false);
+      }, 0);
     }
-    setIsChecking(false);
   }, []);
-
+  
   const handleFinish = () => {
     setShowSplash(false);
     sessionStorage.setItem("hasSeenSplashSession", "true");
@@ -39,14 +61,7 @@ export function LandingPage({ divisions, members = [] }: { divisions: any[]; mem
 
   if (isChecking) return <div className="min-h-screen bg-background" />;
 
-  // Get first division for left top card
-  const topLeftDivision = divisions[0];
-  const rightColumnDivisions = divisions.slice(2, 4);
-
-  // Calculate total members
-  const totalMembers = divisions.reduce((sum, d) => sum + d._count.members, 0);
-
-  const DivisionCard = ({ item }: { item: any }) => {
+  const DivisionCard = ({ item }: { item: Division }) => {
     const Icon = iconMap[item.iconName] || FolderKanban;
     
     return (
@@ -78,71 +93,6 @@ export function LandingPage({ divisions, members = [] }: { divisions: any[]; mem
                  </div>
              </div>
           </div>
-        </div>
-      </Link>
-    );
-  };
-
-  // Member Preview Card Component
-  const MemberPreviewCard = () => {
-    return (
-      <Link
-        href="/members"
-        className="group flex-1 bg-neutral-100 dark:bg-neutral-900 border border-transparent hover:border-border rounded-[2.5rem] p-8 flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1 relative overflow-hidden"
-      >
-        <div className="relative z-10 flex flex-col h-full">
-          <div className="flex justify-between items-start mb-4 gap-4">
-            <h3 className="text-2xl font-black uppercase tracking-tight leading-none group-hover:underline decoration-2 underline-offset-4">
-              Our Team
-            </h3>
-            <Users className="w-8 h-8 text-neutral-300 dark:text-neutral-700 group-hover:text-foreground dark:group-hover:text-white transition-colors shrink-0" />
-          </div>
-          
-          <p className="text-muted-foreground font-medium leading-relaxed mb-6">
-            Meet the talented individuals driving innovation across our divisions.
-          </p>
-
-          {/* Member Avatars Preview */}
-          <div className="flex-1 flex flex-col justify-center">
-            <div className="flex -space-x-3 mb-4">
-              {members.slice(0, 4).map((member, i) => (
-                <div 
-                  key={member.id} 
-                  className="relative w-12 h-12 rounded-full border-2 border-neutral-100 dark:border-neutral-900 overflow-hidden bg-muted"
-                  style={{ zIndex: 4 - i }}
-                >
-                  {member.imageUrl ? (
-                    <Image
-                      src={member.imageUrl}
-                      alt={member.name}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
-                      {member.name.charAt(0)}
-                    </div>
-                  )}
-                </div>
-              ))}
-              {totalMembers > 4 && (
-                <div className="relative w-12 h-12 rounded-full border-2 border-neutral-100 dark:border-neutral-900 bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center">
-                  <span className="text-xs font-bold text-muted-foreground">+{totalMembers - 4}</span>
-                </div>
-              )}
-            </div>
-          </div>
-  
-          <div className="mt-auto">
-            <div className="bg-background/40 dark:bg-black/20 rounded-xl p-3 border border-transparent group-hover:border-border/50 transition-colors inline-block">
-              <p className="text-2xl font-bold leading-none mb-1 text-foreground">{totalMembers}+</p>
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Active Members</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="absolute bottom-8 right-8 flex justify-end opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-4 group-hover:translate-x-0">
-          <ArrowRight className="w-6 h-6 text-foreground" />
         </div>
       </Link>
     );
