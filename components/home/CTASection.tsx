@@ -7,7 +7,7 @@ export function CTASection() {
     const currentYear = new Date().getFullYear();
 
     const navigation = [
-        { label: "About", href: "/about" },
+        { label: "About", href: "/" },
         { label: "Divisions", href: "/divisions" },
         { label: "Projects", href: "/projects" },
     ];
