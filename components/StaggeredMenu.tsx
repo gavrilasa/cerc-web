@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import { gsap } from "gsap";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export interface StaggeredMenuItem {
   label: string;
@@ -416,11 +417,11 @@ export const StaggeredMenu = forwardRef<
 
     return (
       <div
-        className={`sm-scope z-60 ${
-          isFixed
-            ? "fixed top-0 left-0 w-screen h-screen overflow-hidden"
-            : "w-full h-full"
-        }`}
+        className={cn(
+          "sm-scope z-60",
+          isFixed && "fixed top-0 left-0 w-screen h-screen overflow-hidden",
+          !isFixed && "w-full h-full"
+        )}
         style={{
           pointerEvents: open ? "auto" : "none",
           position: "fixed",
@@ -429,10 +430,10 @@ export const StaggeredMenu = forwardRef<
         }}
       >
         <div
-          className={
-            (className ? className + " " : "") +
-            "staggered-menu-wrapper relative w-full h-full z-60"
-          }
+          className={cn(
+            "staggered-menu-wrapper relative w-full h-full z-60",
+            className
+          )}
           style={
             accentColor
               ? ({ "--sm-accent": accentColor } as React.CSSProperties)
@@ -487,9 +488,10 @@ export const StaggeredMenu = forwardRef<
 
             <button
               ref={toggleBtnRef}
-              className={`sm-toggle relative inline-flex items-center gap-[0.3rem] bg-transparent border-0 cursor-pointer font-medium leading-none overflow-visible pointer-events-auto transition-colors duration-300 ${
+              className={cn(
+                "sm-toggle relative inline-flex items-center gap-[0.3rem] bg-transparent border-0 cursor-pointer font-medium leading-none overflow-visible pointer-events-auto transition-colors duration-300",
                 open ? "text-black dark:text-white" : "text-white"
-              }`}
+              )}
               style={buttonStyle}
               onClick={toggleMenu}
               type="button"

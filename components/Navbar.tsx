@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useScroll } from "@/components/ui/use-scroll";
@@ -15,24 +15,33 @@ export function Navbar() {
 	const [isOpen, setIsOpen] = useState(false);
 	const { setTheme, theme } = useTheme();
 
-	const menuItems = [
+	const menuItems = useMemo(() => [
 		{ label: "Home", ariaLabel: "Home", link: "/" },
 		{ label: "Divisions", ariaLabel: "Divisions", link: "/divisions" },
 		{ label: "Projects", ariaLabel: "Projects", link: "/projects" },
 		{ label: "Members", ariaLabel: "Members", link: "/members" },
 		{ label: "Tech Stack", ariaLabel: "Tech Stack", link: "/tech-stack" },
 		{ label: "Achievements", ariaLabel: "Achievements", link: "/achievements" },
-	];
+	], []);
 
-	const socialItems = [
+	const socialItems = useMemo(() => [
 		{ label: "Instagram", link: "https://instagram.com/cerc_undip" },
 		{ label: "LinkedIn", link: "https://linkedin.com/company/cerc-undip" },
 		{ label: "GitHub", link: "https://github.com/cerc-undip" },
-	];
+	], []);
 
-	const handleToggle = () => {
+	const handleToggle = useCallback(() => {
 		menuRef.current?.toggle();
-	};
+	}, []);
+
+	const handleThemeToggle = useCallback(() => {
+		setTheme(theme === "dark" ? "light" : "dark");
+	}, [theme, setTheme]);
+
+	const handleMenuOpen = useCallback(() => setIsOpen(true), []);
+	const handleMenuClose = useCallback(() => setIsOpen(false), []);
+
+	const menuColors = useMemo(() => ["#2563eb", "#1d4ed8", "#1e40af"], []);
 
 	return (
 		<>
@@ -66,12 +75,12 @@ export function Navbar() {
 					</Link>
 
 					<div className="flex items-center gap-2">
-						<Button
-							variant="ghost"
-							size="icon"
-							className="h-10 w-10"
-							onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-						>
+					<Button
+						variant="ghost"
+						size="icon"
+						className="h-10 w-10"
+						onClick={handleThemeToggle}
+					>
 							<Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
 							<Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
 							<span className="sr-only">Toggle theme</span>
@@ -114,10 +123,10 @@ export function Navbar() {
 				isFixed={true}
 				displaySocials={true}
 				displayItemNumbering={true}
-				colors={["#2563eb", "#1d4ed8", "#1e40af"]}
+				colors={menuColors}
 				accentColor="#3b82f6"
-				onMenuOpen={() => setIsOpen(true)}
-				onMenuClose={() => setIsOpen(false)}
+				onMenuOpen={handleMenuOpen}
+				onMenuClose={handleMenuClose}
 				className="font-mono"
 			/>
 		</>

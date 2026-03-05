@@ -4,15 +4,35 @@ import { LandingPage } from "@/components/home/landing-page";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  // Fetch divisions with counts for the Bento Grid
+  // Fetch divisions with projects and members for the Hero section
   const divisions = await prisma.division.findMany({
     orderBy: [{ order: 'asc' }, { title: 'asc' }],
     include: {
-        _count: { select: { projects: true, members: true } }
+      projects: {
+        take: 3,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          demoUrl: true,
+          githubUrl: true,
+        }
+      },
+      members: {
+        take: 4,
+        orderBy: { order: 'asc' },
+        select: {
+          id: true,
+          name: true,
+          role: true,
+          imageUrl: true,
+        }
+      },
+      _count: { select: { projects: true, members: true } }
     }
   });
 
-  // Fetch some members for the preview card
+  // Fetch some members for the preview card (fallback)
   const members = await prisma.member.findMany({
     take: 4,
     orderBy: { createdAt: 'desc' },

@@ -30,6 +30,77 @@ interface Division {
   };
 }
 
+interface DivisionCardProps {
+  div: Division;
+  editOpen: string | null;
+  setEditOpen: (id: string | null) => void;
+}
+
+// DivisionCard component moved outside DivisionsClient to prevent re-creation on every render
+function DivisionCard({ div, editOpen, setEditOpen }: DivisionCardProps) {
+  const Icon = iconMap[div.iconName] || FolderKanban;
+  
+  return (
+    <Card className="group hover:shadow-md transition-shadow">
+      <CardContent className="p-5 pl-10">
+        {/* Header with Icon and Actions */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-primary/10">
+              <Icon size={20} className="text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-base leading-tight">{div.title}</h3>
+              <Badge variant="outline" className="mt-1 text-[10px] font-normal px-1.5">
+                /{div.slug}
+              </Badge>
+            </div>
+          </div>
+          <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Dialog open={editOpen === div.id} onOpenChange={(open) => setEditOpen(open ? div.id : null)}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7">
+                  <Edit size={12} />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Edit Division</DialogTitle></DialogHeader>
+                <DivisionForm data={div} onSuccess={() => setEditOpen(null)} />
+              </DialogContent>
+            </Dialog>
+            <form action={deleteDivision.bind(null, div.id)}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive">
+                <Trash2 size={12} />
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* Description */}
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+          {div.description}
+        </p>
+
+        {/* Stats */}
+        <div className="flex items-center gap-4 text-xs text-muted-foreground pt-3 border-t border-border">
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-foreground">{div._count.projects}</span>
+            <span>Projects</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-foreground">{div._count.members}</span>
+            <span>Members</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-foreground">{div._count.achievements}</span>
+            <span>Awards</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function DivisionsClient({ divisions: initialDivisions }: { divisions: Division[] }) {
   const [divisions, setDivisions] = useState(initialDivisions);
   const [createOpen, setCreateOpen] = useState(false);
@@ -52,70 +123,6 @@ export function DivisionsClient({ divisions: initialDivisions }: { divisions: Di
       // Revert on error
       setDivisions(initialDivisions);
     }
-  };
-
-  const DivisionCard = ({ div }: { div: Division }) => {
-    const Icon = iconMap[div.iconName] || FolderKanban;
-    
-    return (
-      <Card className="group hover:shadow-md transition-shadow">
-        <CardContent className="p-5 pl-10">
-          {/* Header with Icon and Actions */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-primary/10">
-                <Icon size={20} className="text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-base leading-tight">{div.title}</h3>
-                <Badge variant="outline" className="mt-1 text-[10px] font-normal px-1.5">
-                  /{div.slug}
-                </Badge>
-              </div>
-            </div>
-            <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Dialog open={editOpen === div.id} onOpenChange={(open) => setEditOpen(open ? div.id : null)}>
-                <DialogTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-7 w-7">
-                    <Edit size={12} />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader><DialogTitle>Edit Division</DialogTitle></DialogHeader>
-                  <DivisionForm data={div} onSuccess={() => setEditOpen(null)} />
-                </DialogContent>
-              </Dialog>
-              <form action={deleteDivision.bind(null, div.id)}>
-                <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive">
-                  <Trash2 size={12} />
-                </Button>
-              </form>
-            </div>
-          </div>
-
-          {/* Description */}
-          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-            {div.description}
-          </p>
-
-          {/* Stats */}
-          <div className="flex items-center gap-4 text-xs text-muted-foreground pt-3 border-t border-border">
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-foreground">{div._count.projects}</span>
-              <span>Projects</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-foreground">{div._count.members}</span>
-              <span>Members</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="font-medium text-foreground">{div._count.achievements}</span>
-              <span>Awards</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
   };
 
   return (
@@ -145,7 +152,13 @@ export function DivisionsClient({ divisions: initialDivisions }: { divisions: Di
         getId={(div) => div.id}
         className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         layout="grid"
-        renderItem={(div) => <DivisionCard div={div} />}
+        renderItem={(div) => (
+          <DivisionCard 
+            div={div} 
+            editOpen={editOpen} 
+            setEditOpen={setEditOpen} 
+          />
+        )}
       />
         
       {divisions.length === 0 && (

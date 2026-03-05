@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowUpDown } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,11 +10,11 @@ export function SortControl() {
   const searchParams = useSearchParams();
   const currentSort = searchParams.get("sort") || "desc";
 
-  const handleSort = (value: string) => {
+  const handleSort = useCallback((value: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", value);
     router.push(`?${params.toString()}`);
-  };
+  }, [router, searchParams]);
 
   return (
     <div className="flex items-center gap-2">
