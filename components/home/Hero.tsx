@@ -2,6 +2,7 @@
 
 import React, { useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
     PieChart,
     Activity,
@@ -89,7 +90,10 @@ export function Hero({ members = [] }: HeroProps) {
                                 alt="computer mini icon 3d"
                                 height={70}
                                 width={70}
-                                className="hidden md:inline-block ml-2 -mt-6 rotate-6 group-hover:rotate-1 transition-all"
+                                className={cn(
+                                    "hidden md:inline-block ml-2 -mt-6 rotate-6 transition-all",
+                                    "group-hover:rotate-1"
+                                )}
                             />
                             <br />
                             Engineering <br />

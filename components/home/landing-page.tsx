@@ -29,7 +29,44 @@ interface Division {
     projects: number;
     members: number;
   };
-  [key: string]: unknown;
+}
+
+// DivisionCard component moved outside LandingPage to prevent re-creation on every render
+function DivisionCard({ item }: { item: Division }) {
+  const Icon = iconMap[item.iconName] || FolderKanban;
+  
+  return (
+    <Link
+      href="/divisions"
+      className="group flex-1 bg-neutral-100 dark:bg-neutral-900 border border-transparent hover:border-border rounded-[2.5rem] p-8 flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1 relative overflow-hidden"
+    >
+      <div className="relative z-10 flex flex-col h-full">
+        <div className="flex justify-between items-start mb-4 gap-4">
+           <h3 className="text-2xl font-black uppercase tracking-tight leading-none group-hover:underline decoration-2 underline-offset-4">
+            {item.title}
+          </h3>
+          <Icon className="w-8 h-8 text-neutral-300 dark:text-neutral-700 group-hover:text-foreground dark:group-hover:text-white transition-colors shrink-0" />
+        </div>
+        
+        <p className="text-muted-foreground font-medium leading-relaxed mb-8 line-clamp-3">
+          {item.description}
+        </p>
+
+        <div className="mt-auto space-y-6">
+           <div className="grid grid-cols-2 gap-3">
+               <div className="bg-background/40 dark:bg-black/20 rounded-xl p-3 border border-transparent group-hover:border-border/50 transition-colors">
+                   <p className="text-2xl font-bold leading-none mb-1 text-foreground">{item._count.projects}</p>
+                   <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Projects</p>
+               </div>
+               <div className="bg-background/40 dark:bg-black/20 rounded-xl p-3 border border-transparent group-hover:border-border/50 transition-colors">
+                   <p className="text-2xl font-bold leading-none mb-1 text-foreground">{item._count.members}</p>
+                   <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Members</p>
+               </div>
+           </div>
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export function LandingPage({ divisions, members = [] }: { divisions: Division[]; members?: Member[] }) {
@@ -60,43 +97,6 @@ export function LandingPage({ divisions, members = [] }: { divisions: Division[]
   };
 
   if (isChecking) return <div className="min-h-screen bg-background" />;
-
-  const DivisionCard = ({ item }: { item: Division }) => {
-    const Icon = iconMap[item.iconName] || FolderKanban;
-    
-    return (
-      <Link
-        href="/divisions"
-        className="group flex-1 bg-neutral-100 dark:bg-neutral-900 border border-transparent hover:border-border rounded-[2.5rem] p-8 flex flex-col justify-between transition-all hover:shadow-lg hover:-translate-y-1 relative overflow-hidden"
-      >
-        <div className="relative z-10 flex flex-col h-full">
-          <div className="flex justify-between items-start mb-4 gap-4">
-             <h3 className="text-2xl font-black uppercase tracking-tight leading-none group-hover:underline decoration-2 underline-offset-4">
-              {item.title}
-            </h3>
-            <Icon className="w-8 h-8 text-neutral-300 dark:text-neutral-700 group-hover:text-foreground dark:group-hover:text-white transition-colors shrink-0" />
-          </div>
-          
-          <p className="text-muted-foreground font-medium leading-relaxed mb-8 line-clamp-3">
-            {item.description}
-          </p>
-  
-          <div className="mt-auto space-y-6">
-             <div className="grid grid-cols-2 gap-3">
-                 <div className="bg-background/40 dark:bg-black/20 rounded-xl p-3 border border-transparent group-hover:border-border/50 transition-colors">
-                     <p className="text-2xl font-bold leading-none mb-1 text-foreground">{item._count.projects}</p>
-                     <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Projects</p>
-                 </div>
-                 <div className="bg-background/40 dark:bg-black/20 rounded-xl p-3 border border-transparent group-hover:border-border/50 transition-colors">
-                     <p className="text-2xl font-bold leading-none mb-1 text-foreground">{item._count.members}</p>
-                     <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Members</p>
-                 </div>
-             </div>
-          </div>
-        </div>
-      </Link>
-    );
-  };
 
   return (
     <div className="w-full min-h-screen bg-background flex flex-col overflow-hidden">

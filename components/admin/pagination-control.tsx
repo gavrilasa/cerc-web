@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -21,11 +22,11 @@ export function PaginationControl({
   const currentPage = Number(searchParams.get(paramName)) || 1;
   const totalPages = Math.ceil(totalCount / pageSize);
 
-  const handlePageChange = (newPage: number) => {
+  const handlePageChange = useCallback((newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set(paramName, newPage.toString());
     router.push(`?${params.toString()}`);
-  };
+  }, [router, searchParams, paramName]);
 
   if (totalPages <= 1) return null;
 

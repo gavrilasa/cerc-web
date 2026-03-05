@@ -7,6 +7,7 @@ import { Loader2, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -81,23 +82,23 @@ export default function LoginPage() {
           {/* Form */}
           <div className="space-y-3 mb-6">
             {/* Email Input */}
-            <input 
+            <Input 
               type="email"
-              className="w-full px-4 py-3.5 bg-transparent border border-neutral-700 rounded-xl focus:border-neutral-500 outline-none text-white placeholder:text-neutral-600 transition-colors" 
               placeholder="Your Username" 
               value={email} 
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={handleKeyDown}
+              className="bg-transparent border-neutral-700 text-white placeholder:text-neutral-600 focus:border-neutral-500"
             />
             
             {/* Password Input */}
-            <input 
+            <Input 
               type="password"
-              className="w-full px-4 py-3.5 bg-transparent border border-neutral-700 rounded-xl focus:border-neutral-500 outline-none text-white placeholder:text-neutral-600 transition-colors" 
               placeholder="••••••••" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={handleKeyDown}
+              className="bg-transparent border-neutral-700 text-white placeholder:text-neutral-600 focus:border-neutral-500"
             />
           </div>
 
